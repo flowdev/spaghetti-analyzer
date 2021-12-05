@@ -1,0 +1,5 @@
+{
+				"tool": ["pkg/x/*"], "db": ["pkg/db/*"],
+				"allowAdditionally": {"pkg/domain4": ["pkg/domain3"]},
+				"size": 1024
+			}
