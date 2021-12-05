@@ -1,3 +1,2 @@
-github.com/flowdev/spaghetti-analyzer v0.0.0-20200513121727-989873cfc038 h1:Vt2zfYlIJTV3eXPA4ja3w7UY3FSoyEBz93Sp8L3U97A=
-github.com/flowdev/spaghetti-analyzer/testdata/good-proj v0.0.0-20200513121727-989873cfc038 h1:DM0xtpwZjrM0/BnIGKphoroyBwLy97Ophrhg4imIrD4=
-github.com/flowdev/spaghetti-analyzer/testdata/good-proj v0.0.0-20200513121727-989873cfc038/go.mod h1:SV2G2i9vl/IX/5UEdrniiQP4UZDpgDtqUE7J6ON1TPA=
+github.com/flowdev/spaghetti-analyzer/testdata/good-proj v0.0.0-20211205200008-778f37c46338 h1:HHBB1YGbawA2l8cxgLJg3eAsr4g8jJZu0DC/cZK7/bA=
+github.com/flowdev/spaghetti-analyzer/testdata/good-proj v0.0.0-20211205200008-778f37c46338/go.mod h1:2dIKp9K/mqViO8ipq3p8rClCGuIshyJoQ0pL7DPgGhE=
