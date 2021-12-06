@@ -12,7 +12,7 @@ import (
 )
 
 // File is the name of the configuration file
-const File = ".spaghetti-analyzer.hjson"
+const File = ".spaghetti-cutter.hjson"
 
 type patternGroup struct {
 	left  data.Pattern

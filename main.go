@@ -41,15 +41,12 @@ func cut(args []string) int {
 		usageStats     = "write '" + stat.FileName + "' for project"
 		defaultDirTree = false
 		usageDirTree   = "write a directory tree (starting at the current directory) to: dirtree.txt"
-		defaultNoErr   = false
-		usageNoErr     = "don't report errors or exit with an error"
 	)
 	var startDir string
 	var docPkgs string
 	var noLinks bool
 	var doStats bool
 	var dirTree bool
-	var noErr bool
 	fs := flag.NewFlagSet("spaghetti-analyzer", flag.ExitOnError)
 	fs.StringVar(&startDir, "root", defaultRoot, usageRoot)
 	fs.StringVar(&startDir, "r", defaultRoot, usageRoot+usageShort)
@@ -61,8 +58,6 @@ func cut(args []string) int {
 	fs.BoolVar(&doStats, "s", defaultStats, usageStats+usageShort)
 	fs.BoolVar(&dirTree, "dirtree", defaultDirTree, usageDirTree)
 	fs.BoolVar(&dirTree, "t", defaultDirTree, usageDirTree+usageShort)
-	fs.BoolVar(&noErr, "noerror", defaultNoErr, usageNoErr)
-	fs.BoolVar(&noErr, "e", defaultNoErr, usageNoErr+usageShort)
 	err := fs.Parse(args)
 	if err != nil {
 		log.Printf("FATAL - %v", err)
@@ -96,7 +91,7 @@ func cut(args []string) int {
 	log.Printf("INFO - documenting package(s): %s", docPkgs)
 	log.Printf("INFO - no links in '"+doc.FileName+"' files: %t", noLinks)
 	log.Printf("INFO - write statistics: %t", doStats)
-	log.Printf("INFO - no errors are reported: %t", noErr)
+	log.Printf("INFO - write directory tree: %t", dirTree)
 
 	packs, err := parse.DirTree(root)
 	if err != nil {
@@ -115,18 +110,6 @@ func cut(args []string) int {
 		errs = addErrors(errs, size.Check(pkgInfo.Pkg, rootPkg, cfg.Size))
 	}
 
-	retCode := 0
-	if !noErr {
-		if len(errs) > 0 {
-			for _, err = range errs {
-				log.Printf("ERROR - %v", err)
-			}
-			retCode = 1
-		} else {
-			log.Print("INFO - No errors found.")
-		}
-	}
-
 	if doStats {
 		writeStatistics(root, depMap)
 	} else {
@@ -143,11 +126,11 @@ func cut(args []string) int {
 		err := writeDirTree(".", path.Base(rootPkg), packs)
 		if err != nil {
 			log.Printf("FATAL - %v", err)
-			return 6
+			return 7
 		}
 	}
 
-	return retCode
+	return 0
 }
 
 func writeStatistics(root string, depMap data.DependencyMap) {

@@ -19,8 +19,7 @@ func FindRoot(startDir, cfgFile string) (string, error) {
 		return "", err
 	}
 	if dir == "" {
-		absDir, _ := filepath.Abs(".") // we checked this just inside of crawlUpAndFindDirOf()
-		return "", fmt.Errorf("unable to find root directory for: %s", absDir)
+		dir, _ = filepath.Abs(startDir) // we checked this just inside of crawlUpAndFindDirOf()
 	}
 
 	return dir, nil

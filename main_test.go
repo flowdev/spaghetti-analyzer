@@ -19,7 +19,7 @@ func TestCut(t *testing.T) {
 			name:               "no-config-good-proj",
 			givenRoot:          "good-proj",
 			givenConfig:        `{}`,
-			expectedReturnCode: 1,
+			expectedReturnCode: 0,
 		}, {
 			name:      "strict-config-good-proj",
 			givenRoot: "good-proj",
@@ -28,7 +28,7 @@ func TestCut(t *testing.T) {
 				"allowAdditionally": {"pkg/domain4": ["pkg/domain3"]},
 				"size": 16
 			}`,
-			expectedReturnCode: 1,
+			expectedReturnCode: 0,
 		}, {
 			name:      "lenient-config-good-proj",
 			givenRoot: "good-proj",
