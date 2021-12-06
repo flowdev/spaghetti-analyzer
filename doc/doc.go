@@ -44,11 +44,6 @@ func docFilesForPkgs(pkgs []string) []string {
 	return files
 }
 
-// IDEAS:
-// - Each linkDocPkg can be a pattern
-// - A package matching the pattern will be linked to the corresponding file
-// - A package matching the pattern will be handled in the corresponding file
-
 func writeDoc(
 	idx int,
 	links data.PatternList,
@@ -80,7 +75,7 @@ func GenerateTable(
 	pattern := links[idx].Pattern
 	depMap = data.FilterDepMap(depMap, idx, links)
 	if len(depMap) == 0 {
-		log.Printf("INFO - Won't write doc for package %q because it has no dependencies.", pattern)
+		log.Printf("INFO - Won't write depenency table for package %q because it has no dependencies.", pattern)
 		return ""
 	}
 	allRows := make([]string, 0, len(depMap))
@@ -163,7 +158,7 @@ func GenerateTable(
 ### Legend
 
 * Rows - Importing packages
-* columns - Imported packages
+* Columns - Imported packages
 
 
 #### Meaning Of Row And Row Header Formatting
@@ -171,7 +166,7 @@ func GenerateTable(
 * **Bold** - God package (can use all packages)
 ` + "* `Code` - Database package (can only use tool and other database packages)" + `
 * _Italic_ - Tool package (foundational, no dependencies)
-* no formatting - Standard package (can only use tool and database packages)
+* No formatting - Standard package (can only use tool and database packages)
 
 
 #### Meaning Of Letters In Table Columns
