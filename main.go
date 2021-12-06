@@ -13,7 +13,6 @@ import (
 	"github.com/flowdev/spaghetti-analyzer/deps"
 	"github.com/flowdev/spaghetti-analyzer/doc"
 	"github.com/flowdev/spaghetti-analyzer/parse"
-	"github.com/flowdev/spaghetti-analyzer/size"
 	"github.com/flowdev/spaghetti-analyzer/stat"
 	"github.com/flowdev/spaghetti-analyzer/tree"
 	"github.com/flowdev/spaghetti-analyzer/x/config"
@@ -98,9 +97,9 @@ func cut(args []string) int {
 		}
 	}
 
-	log.Printf("INFO - documenting package(s): %s", docPkgs)
+	log.Printf("INFO - dependency tables for package(s): %s", docPkgs)
 	log.Printf("INFO - no links in '"+doc.FileName+"' files: %t", noLinks)
-	log.Printf("INFO - write statistics: %t", doStats)
+	log.Printf("INFO - write dependency statistics: %t", doStats)
 	log.Printf("INFO - write directory tree: %t", dirTree)
 
 	packs, err := parse.DirTree(root)
@@ -117,19 +116,18 @@ func cut(args []string) int {
 	pkgInfos := pkgs.UniquePackages(packs)
 	for _, pkgInfo := range pkgInfos {
 		errs = addErrors(errs, deps.Check(pkgInfo.Pkg, rootPkg, cfg, &depMap))
-		errs = addErrors(errs, size.Check(pkgInfo.Pkg, rootPkg, cfg.Size))
 	}
 
 	if doStats {
 		writeStatistics(root, depMap)
 	} else {
-		log.Print("INFO - No statistics wanted.")
+		log.Print("INFO - No dependency statistics wanted.")
 	}
 
 	if docPkgs != "" {
 		writeDocumentation(docPkgs, root, rootPkg, noLinks, depMap)
 	} else {
-		log.Print("INFO - No documentation wanted.")
+		log.Print("INFO - No dependency table wanted.")
 	}
 
 	if dirTree {
@@ -138,6 +136,8 @@ func cut(args []string) int {
 			log.Printf("FATAL - %v", err)
 			return 7
 		}
+	} else {
+		log.Print("INFO - No directory tree wanted.")
 	}
 
 	return 0
