@@ -14,15 +14,7 @@ func FindRoot(startDir, cfgFile string) (string, error) {
 	if startDir == "" {
 		startDir = "."
 	}
-	dir, err := crawlUpAndFindDirOf(startDir, cfgFile)
-	if err != nil {
-		return "", err
-	}
-	if dir == "" {
-		dir, _ = filepath.Abs(startDir) // we checked this just inside of crawlUpAndFindDirOf()
-	}
-
-	return dir, nil
+	return crawlUpAndFindDirOf(startDir, cfgFile)
 }
 
 func crawlUpAndFindDirOf(startDir string, files ...string) (string, error) {
