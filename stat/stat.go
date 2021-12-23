@@ -37,7 +37,7 @@ func Generate(depMap data.DependencyMap) string {
 		return ""
 	}
 
-	pkgNames := sortPkgNames(depMap)
+	pkgNames := depMap.SortedPkgNames()
 	allDeps := allDependencies(depMap)
 
 	sb := &strings.Builder{}
@@ -180,15 +180,6 @@ func sortedKeys(m map[string]map[string]struct{}) []string {
 	}
 	sort.Strings(keys)
 	return keys
-}
-
-func sortPkgNames(depMap data.DependencyMap) []string {
-	names := make([]string, 0, len(depMap))
-	for pkg := range depMap {
-		names = append(names, pkg)
-	}
-	sort.Strings(names)
-	return names
 }
 
 func allDependencies(depMap data.DependencyMap) map[string]map[string]struct{} {

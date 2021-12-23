@@ -1,7 +1,6 @@
 package deps
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/flowdev/spaghetti-analyzer/data"
@@ -9,171 +8,37 @@ import (
 	"github.com/flowdev/spaghetti-analyzer/x/pkgs"
 )
 
-// Check checks the dependencies of the given package and reports offending
-// imports.
-func Check(pkg *pkgs.Package, rootPkg string, cfg config.Config, depMap *data.DependencyMap) []error {
+// Fill fills the dependency map of the given package.
+func Fill(pkg *pkgs.Package, rootPkg string, cfg config.Config, depMap *data.DependencyMap) {
+	if pkgs.IsTestPackage(pkg) {
+		return
+	}
+
 	relPkg, strictRelPkg := pkgs.RelativePackageName(pkg, rootPkg)
-	checkSpecial := checkStandard
-	pkgImps := data.PkgImports{}
-
-	var fullmatch, matchDB bool
-	if _, fullmatch = isPackageInList(cfg.God, nil, relPkg, strictRelPkg); fullmatch {
-		checkSpecial = checkGod
-		pkgImps.PkgType = data.TypeGod
-	}
-	if matchDB, fullmatch = isPackageInList(cfg.DB, nil, relPkg, strictRelPkg); matchDB {
-		if fullmatch {
-			checkSpecial = checkDB
-			pkgImps.PkgType = data.TypeDB
-		} else {
-			checkSpecial = checkHalfDB
-		}
-	}
-	if matchTool, fullmatch := isPackageInList(cfg.Tool, nil, relPkg, strictRelPkg); matchTool {
-		if fullmatch {
-			checkSpecial = checkTool
-			pkgImps.PkgType = data.TypeTool
-		} else if !matchDB {
-			checkSpecial = checkHalfTool
-		}
-	}
-
 	unqPkg := pkgs.UniquePackageName(relPkg, strictRelPkg)
-	errs := checkPkg(pkg, relPkg, strictRelPkg, rootPkg, cfg, checkSpecial, &pkgImps)
-	if !pkgs.IsTestPackage(pkg) && len(pkgImps.Imports) > 0 {
+
+	pkgImps := importsOf(pkg, relPkg, strictRelPkg, rootPkg, cfg)
+	if len(pkgImps.Imports) > 0 {
 		(*depMap)[unqPkg] = pkgImps
 	}
-	return errs
 }
 
-func checkPkg(
+func importsOf(
 	pkg *pkgs.Package,
 	relPkg, strictRelPkg, rootPkg string,
 	cfg config.Config,
-	checkSpecial func(string, string, string, string, config.Config) error,
-	imps *data.PkgImports,
-) (errs []error) {
+) data.PkgImports {
+	imps := data.PkgImports{}
+
 	for _, p := range pkg.Imports {
-		relImp, strictRelImp := "", ""
-		internal := false
-
-		if strings.HasPrefix(p.PkgPath, rootPkg) {
-			relImp, strictRelImp = pkgs.RelativePackageName(p, rootPkg)
-			internal = true
-		} else {
-			strictRelImp = p.PkgPath
-		}
-
-		unqPkg := pkgs.UniquePackageName(relPkg, strictRelPkg)
-		unqImp := pkgs.UniquePackageName(relImp, strictRelImp)
-		pl, dollars := cfg.AllowOnlyIn.MatchingList(strictRelImp)
-		if pl == nil {
-			pl, dollars = cfg.AllowOnlyIn.MatchingList(relImp)
-		}
-		if pl != nil {
-			if _, full := isPackageInList(pl, dollars, relPkg, strictRelPkg); !full {
-				errs = append(errs, fmt.Errorf(
-					"package '%s' isn't allowed to import package '%s' (because of allowOnlyIn)",
-					unqPkg, unqImp))
-			}
+		if !strings.HasPrefix(p.PkgPath, rootPkg) {
 			continue
 		}
+		relImp, strictRelImp := pkgs.RelativePackageName(p, rootPkg)
 
-		if internal {
-			if !pkgs.IsTestPackage(pkg) {
-				imps.Imports = saveDep(imps.Imports, relImp, strictRelImp, cfg)
-			}
-
-			// check in allow first:
-			pl = nil
-			if strictRelPkg != "" {
-				pl, dollars = cfg.AllowAdditionally.MatchingList(strictRelPkg)
-			}
-			if pl == nil {
-				pl, dollars = cfg.AllowAdditionally.MatchingList(relPkg)
-			}
-			if _, full := isPackageInList(pl, dollars, relImp, strictRelImp); full {
-				continue // this import is fine
-			}
-
-			if err := checkSpecial(relPkg, strictRelPkg, relImp, strictRelImp, cfg); err != nil {
-				errs = append(errs, err)
-			}
-		}
+		imps.Imports = saveDep(imps.Imports, relImp, strictRelImp, cfg)
 	}
-	return errs
-}
-
-func checkTool(relPkg, strictRelPkg, relImp, strictRelImp string, cfg config.Config) error {
-	if isTestPackage(relPkg, strictRelPkg) {
-		return nil
-	}
-	return fmt.Errorf("tool package '%s' isn't allowed to import package '%s'",
-		pkgs.UniquePackageName(relPkg, strictRelPkg),
-		pkgs.UniquePackageName(relImp, strictRelImp))
-}
-
-func checkHalfTool(relPkg, strictRelPkg, relImp, strictRelImp string, cfg config.Config) error {
-	if isTestPackage(relPkg, strictRelPkg) {
-		return nil
-	}
-	return fmt.Errorf("tool sub-package '%s' isn't allowed to import package '%s'",
-		pkgs.UniquePackageName(relPkg, strictRelPkg),
-		pkgs.UniquePackageName(relImp, strictRelImp))
-}
-
-func checkDB(relPkg, strictRelPkg, relImp, strictRelImp string, cfg config.Config) error {
-	if _, full := isPackageInList(cfg.Tool, nil, relImp, strictRelImp); full {
-		return nil
-	}
-	if _, full := isPackageInList(cfg.DB, nil, relImp, strictRelImp); full {
-		return nil
-	}
-	if isTestPackage(relPkg, strictRelPkg) {
-		return nil
-	}
-	return fmt.Errorf("DB package '%s' isn't allowed to import package '%s'",
-		pkgs.UniquePackageName(relPkg, strictRelPkg),
-		pkgs.UniquePackageName(relImp, strictRelImp))
-}
-
-func checkHalfDB(relPkg, strictRelPkg, relImp, strictRelImp string, cfg config.Config) error {
-	if _, full := isPackageInList(cfg.Tool, nil, relImp, strictRelImp); full {
-		return nil
-	}
-	if isTestPackage(relPkg, strictRelPkg) {
-		return nil
-	}
-	return fmt.Errorf("DB sub-package '%s' isn't allowed to import package '%s'",
-		pkgs.UniquePackageName(relPkg, strictRelPkg),
-		pkgs.UniquePackageName(relImp, strictRelImp))
-}
-
-func checkGod(relPkg, strictRelPkg, relImp, strictRelImp string, cfg config.Config) error {
-	return nil // God never fails ;-)
-}
-
-func checkStandard(relPkg, strictRelPkg, relImp, strictRelImp string, cfg config.Config) error {
-	if _, full := isPackageInList(cfg.Tool, nil, relImp, strictRelImp); full {
-		return nil
-	}
-	if _, full := isPackageInList(cfg.DB, nil, relImp, strictRelImp); full {
-		return nil
-	}
-	if isTestPackage(relPkg, strictRelPkg) {
-		return nil
-	}
-	return fmt.Errorf("domain package '%s' isn't allowed to import package '%s'",
-		pkgs.UniquePackageName(relPkg, strictRelPkg),
-		pkgs.UniquePackageName(relImp, strictRelImp))
-}
-
-func isTestPackage(rel, strict string) bool {
-	p := strict
-	if p == "" {
-		p = rel
-	}
-	return strings.HasSuffix(p, "_test")
+	return imps
 }
 
 func isPackageInList(pl data.PatternList, dollars []string, pkg, strictPkg string) (atAll, full bool) {

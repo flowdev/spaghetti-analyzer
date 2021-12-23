@@ -82,13 +82,9 @@ func cut(args []string) int {
 			return 5
 		}
 
-		log.Printf("INFO - configuration 'allowOnlyIn': %s", cfg.AllowOnlyIn)
-		log.Printf("INFO - configuration 'allowAdditionally': %s", cfg.AllowAdditionally)
 		log.Printf("INFO - configuration 'god': %s", cfg.God)
 		log.Printf("INFO - configuration 'tool': %s", cfg.Tool)
 		log.Printf("INFO - configuration 'db': %s", cfg.DB)
-		log.Printf("INFO - configuration 'size': %d", cfg.Size)
-		log.Printf("INFO - configuration 'noGod': %t", cfg.NoGod)
 	} else {
 		root, err = filepath.Abs(startDir)
 		if err != nil {
@@ -108,14 +104,12 @@ func cut(args []string) int {
 		return 6
 	}
 
-	var errs []error
 	depMap := make(data.DependencyMap, 256)
-
 	rootPkg := parse.RootPkg(packs)
 	log.Printf("INFO - root package: %s", rootPkg)
 	pkgInfos := pkgs.UniquePackages(packs)
 	for _, pkgInfo := range pkgInfos {
-		errs = addErrors(errs, deps.Check(pkgInfo.Pkg, rootPkg, cfg, &depMap))
+		deps.Fill(pkgInfo.Pkg, rootPkg, cfg, &depMap)
 	}
 
 	if doStats {
@@ -214,8 +208,4 @@ func splitPackageNames(docPkgs, pkgType string) []string {
 		retPkgs = append(retPkgs, pkg)
 	}
 	return retPkgs
-}
-
-func addErrors(errs []error, newErrs []error) []error {
-	return append(errs, newErrs...)
 }
