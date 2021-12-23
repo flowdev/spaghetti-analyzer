@@ -6,8 +6,8 @@
 | [deps](#package-deps) | [ \[S\] ](#legend) | [3](#direct-dependencies-imports-of-package-deps) | [3](#all-including-transitive-dependencies-imports-of-package-deps) | [1](#packages-using-importing-package-deps) | 0 | 0 |
 | [doc](#package-doc) | [ \[S\] ](#legend) | [1](#direct-dependencies-imports-of-package-doc) | [1](#all-including-transitive-dependencies-imports-of-package-doc) | [1](#packages-using-importing-package-doc) | 0 | 0 |
 | [parse](#package-parse) | [ \[S\] ](#legend) | [1](#direct-dependencies-imports-of-package-parse) | [1](#all-including-transitive-dependencies-imports-of-package-parse) | [1](#packages-using-importing-package-parse) | 0 | 0 |
-| [size](#package-size) | [ \[S\] ](#legend) | [1](#direct-dependencies-imports-of-package-size) | [1](#all-including-transitive-dependencies-imports-of-package-size) | [1](#packages-using-importing-package-size) | 0 | 0 |
 | [stat](#package-stat) | [ \[S\] ](#legend) | [1](#direct-dependencies-imports-of-package-stat) | [1](#all-including-transitive-dependencies-imports-of-package-stat) | [1](#packages-using-importing-package-stat) | 0 | 0 |
+| [tree](#package-tree) | [ \[S\] ](#legend) | [1](#direct-dependencies-imports-of-package-tree) | [1](#all-including-transitive-dependencies-imports-of-package-tree) | [1](#packages-using-importing-package-tree) | 0 | 0 |
 | [x/config](#package-xconfig) | [ \[T\] ](#legend) | [1](#direct-dependencies-imports-of-package-xconfig) | [1](#all-including-transitive-dependencies-imports-of-package-xconfig) | [2](#packages-using-importing-package-xconfig) | 0 | 0 |
 
 ### Legend
@@ -29,10 +29,10 @@
 
 
 #### Direct Dependencies (Imports) Of Root Package
-`data`, [deps](#package-deps), [doc](#package-doc), [parse](#package-parse), [size](#package-size), [stat](#package-stat), [x/config](#package-xconfig), `x/dirs`, `x/pkgs`
+`data`, [deps](#package-deps), [doc](#package-doc), [parse](#package-parse), [stat](#package-stat), [tree](#package-tree), [x/config](#package-xconfig), `x/dirs`, `x/pkgs`
 
 #### All (Including Transitive) Dependencies (Imports) Of Root Package
-`data`, [deps](#package-deps), [doc](#package-doc), [parse](#package-parse), [size](#package-size), [stat](#package-stat), [x/config](#package-xconfig), `x/dirs`, `x/pkgs`
+`data`, [deps](#package-deps), [doc](#package-doc), [parse](#package-parse), [stat](#package-stat), [tree](#package-tree), [x/config](#package-xconfig), `x/dirs`, `x/pkgs`
 
 ### Package deps
 
@@ -70,18 +70,6 @@
 #### Packages Using (Importing) Package parse
 [root](#root-package)
 
-### Package size
-
-
-#### Direct Dependencies (Imports) Of Package size
-`x/pkgs`
-
-#### All (Including Transitive) Dependencies (Imports) Of Package size
-`x/pkgs`
-
-#### Packages Using (Importing) Package size
-[root](#root-package)
-
 ### Package stat
 
 
@@ -92,6 +80,18 @@
 `data`
 
 #### Packages Using (Importing) Package stat
+[root](#root-package)
+
+### Package tree
+
+
+#### Direct Dependencies (Imports) Of Package tree
+`x/pkgs`
+
+#### All (Including Transitive) Dependencies (Imports) Of Package tree
+`x/pkgs`
+
+#### Packages Using (Importing) Package tree
 [root](#root-package)
 
 ### Package x/config

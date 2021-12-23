@@ -138,13 +138,11 @@ func cut(args []string) int {
 }
 
 func writeStatistics(root string, depMap data.DependencyMap) {
-	log.Print("INFO - Writing statistics.")
-
+	log.Printf("INFO - Writing package statistics to file: %s", stat.FileName)
 	statMD := stat.Generate(depMap)
 	if statMD == "" {
 		return
 	}
-	log.Printf("INFO - Writing package statistics to file: %s", stat.FileName)
 	statFile := filepath.Join(root, stat.FileName)
 	err := ioutil.WriteFile(statFile, []byte(statMD), 0644)
 	if err != nil {
@@ -153,7 +151,7 @@ func writeStatistics(root string, depMap data.DependencyMap) {
 }
 
 func writeDocumentation(docPkgs, root, rootPkg string, noLinks bool, depMap data.DependencyMap) {
-	log.Print("INFO - Writing documentation.")
+	log.Print("INFO - Writing dependency tables:")
 	dtPkgs := findPackagesWithFileAsSlice(doc.FileName, docPkgs, root, "documentation")
 
 	linkDocPkgs := map[string]struct{}{}
