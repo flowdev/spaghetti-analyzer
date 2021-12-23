@@ -16,8 +16,18 @@ func Fill(pkg *pkgs.Package, rootPkg string, cfg config.Config, depMap *data.Dep
 
 	relPkg, strictRelPkg := pkgs.RelativePackageName(pkg, rootPkg)
 	unqPkg := pkgs.UniquePackageName(relPkg, strictRelPkg)
-
 	pkgImps := importsOf(pkg, relPkg, strictRelPkg, rootPkg, cfg)
+
+	if _, fullmatch := isPackageInList(cfg.God, nil, relPkg, strictRelPkg); fullmatch {
+		pkgImps.PkgType = data.TypeGod
+	}
+	if _, fullmatch := isPackageInList(cfg.DB, nil, relPkg, strictRelPkg); fullmatch {
+		pkgImps.PkgType = data.TypeDB
+	}
+	if _, fullmatch := isPackageInList(cfg.Tool, nil, relPkg, strictRelPkg); fullmatch {
+		pkgImps.PkgType = data.TypeTool
+	}
+
 	if len(pkgImps.Imports) > 0 {
 		(*depMap)[unqPkg] = pkgImps
 	}
