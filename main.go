@@ -21,13 +21,13 @@ import (
 )
 
 func main() {
-	rc := cut(os.Args[1:])
+	rc := analyze(os.Args[1:])
 	if rc != 0 {
 		os.Exit(rc)
 	}
 }
 
-func cut(args []string) int {
+func analyze(args []string) int {
 	const (
 		usageShort     = " (shorthand)"
 		defaultRoot    = "."
@@ -119,7 +119,7 @@ func cut(args []string) int {
 	}
 
 	if docPkgs != "" {
-		writeDocumentation(docPkgs, root, rootPkg, noLinks, depMap)
+		writeDepTables(docPkgs, root, rootPkg, noLinks, depMap)
 	} else {
 		log.Print("INFO - No dependency table wanted.")
 	}
@@ -150,20 +150,6 @@ func writeStatistics(root string, depMap data.DependencyMap) {
 	}
 }
 
-func writeDocumentation(docPkgs, root, rootPkg string, noLinks bool, depMap data.DependencyMap) {
-	log.Print("INFO - Writing dependency tables:")
-	dtPkgs := findPackagesWithFileAsSlice(doc.FileName, docPkgs, root, "documentation")
-
-	linkDocPkgs := map[string]struct{}{}
-	if !noLinks {
-		linkDocPkgs = dirs.FindPkgsWithFile(doc.FileName, dtPkgs, root, true)
-		for _, p := range dtPkgs {
-			linkDocPkgs[p] = struct{}{}
-		}
-	}
-	doc.WriteDocs(dtPkgs, depMap, linkDocPkgs, rootPkg, root)
-}
-
 func writeDirTree(root, name string, packs []*pkgs.Package) error {
 	treeFile := filepath.Join(root, tree.File)
 	log.Printf("INFO - Writing directory tree to file: %s", treeFile)
@@ -180,10 +166,21 @@ func writeDirTree(root, name string, packs []*pkgs.Package) error {
 	return nil
 }
 
-func findPackagesWithFileAsSlice(signalFile, pkgNames, root, pkgType string) []string {
+func writeDepTables(docPkgs, root, rootPkg string, noLinks bool, depMap data.DependencyMap) {
+	log.Print("INFO - Writing dependency tables:")
+	dtPkgs := findDepTablesAsSlice(docPkgs, root, rootPkg, "documentation")
+
+	linkDocPkgs := map[string]struct{}{}
+	if !noLinks {
+		linkDocPkgs = dirs.FindDepTables(doc.FileName, doc.Title, dtPkgs, root, rootPkg)
+	}
+	doc.WriteDocs(dtPkgs, depMap, linkDocPkgs, rootPkg, root)
+}
+
+func findDepTablesAsSlice(pkgNames, root, rootPkg, pkgType string) []string {
 	var packs []string
 	if pkgNames == "*" { // find all existing files
-		pkgMap := dirs.FindPkgsWithFile(signalFile, nil, root, false)
+		pkgMap := dirs.FindDepTables(doc.FileName, doc.Title, nil, root, rootPkg)
 		packs = make([]string, 0, len(pkgMap))
 		for p := range pkgMap {
 			packs = append(packs, p)

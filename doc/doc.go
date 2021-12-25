@@ -11,8 +11,12 @@ import (
 	"github.com/flowdev/spaghetti-analyzer/data"
 )
 
-// FileName is the name of the documentation file (package_dependencies.md).
-const FileName = "package_dependencies.md"
+const (
+	// FileName is the name of the documentation file (package_dependencies.md)
+	FileName = "package_dependencies.md"
+	// Title is the mark down title of the package dependencies
+	Title = `# Dependency Table For: `
+)
 
 // WriteDocs generates documentation for the packages 'dtPkgs' and writes it to
 // files.
@@ -96,7 +100,7 @@ func GenerateTable(
 	sort.Strings(allCols)
 
 	sb := &strings.Builder{}
-	intro := `# Dependency Table For: ` + path.Join(rootPkg, pattern) + `
+	intro := Title + path.Join(rootPkg, pattern) + `
 
 | `
 	sb.WriteString(intro)

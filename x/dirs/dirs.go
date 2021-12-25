@@ -1,6 +1,7 @@
 package dirs
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"os"
@@ -37,11 +38,11 @@ func crawlUpAndFindDirOf(startDir string, files ...string) (string, error) {
 	return "", nil
 }
 
-// FindPkgsWithFile is finding packages containing file on disk starting at
-// 'root' and adding them to those given in 'startPkgs'.
-func FindPkgsWithFile(file string, startPkgs []string, root string, excludeRoot bool) map[string]struct{} {
+// FindDepTables is finding packages containing a dependency table on disk
+// starting at 'root' and adding them to those given in 'startPkgs'.
+func FindDepTables(file, title string, startPkgs []string, root, rootPkg string) map[string]struct{} {
 	val := struct{}{}
-	// prefill doc packages from dtPkgs
+	// prefill doc packages from startPkgs
 	retPkgs := make(map[string]struct{}, 128)
 	for _, p := range startPkgs {
 		retPkgs[p] = val
@@ -56,26 +57,31 @@ func FindPkgsWithFile(file string, startPkgs []string, root string, excludeRoot 
 			log.Printf("WARN - Unable to list directory %q: %v", path, err)
 			return filepath.SkipDir
 		}
-		if excludeRoot && path == root {
-			return nil // don't add the root 'file'
-		}
 
-		// no valid package starts with '.' and we don't want to search in '.git' and similar
+		// no valid package starts with '.' and we don't want to search in testdata
 		if strings.HasPrefix(info.Name(), ".") || info.Name() == "testdata" {
 			return filepath.SkipDir
 		}
 
-		if _, err := os.Lstat(filepath.Join(path, file)); err == nil {
+		depFile := filepath.Join(path, file)
+		if _, err := os.Lstat(depFile); err == nil {
 			pkg, err := filepath.Rel(root, path)
 			if err != nil {
 				log.Printf("WARN - Unable to compute package for %q: %v", path, err)
 				return nil // sub-directories might work
 			}
-			pkg = strings.ReplaceAll(pkg, "\\", "/") // packages like URLs have always '/'s
-			if pkg == "." {
+			pattern, err := readPatternFromFile(depFile, title, rootPkg)
+			if err != nil {
+				log.Printf("WARN - Problem reading pattern from file %q: %v", depFile, err)
+				err = nil
+			}
+			if pattern == "" {
+				pattern = strings.ReplaceAll(pkg, "\\", "/") // packages like URLs have always '/'s
+			}
+			if pattern == "." {
 				retPkgs["/"] = val
 			} else {
-				retPkgs[pkg] = val
+				retPkgs[pattern] = val
 			}
 		}
 		return nil
@@ -84,4 +90,44 @@ func FindPkgsWithFile(file string, startPkgs []string, root string, excludeRoot 
 		log.Printf("ERROR - Unable to walk the path %q: %v", root, err)
 	}
 	return retPkgs
+}
+
+func readPatternFromFile(depFile, prefix, rootPkg string) (string, error) {
+	lines, err := readFirstLines(depFile, 5)
+	prefix = strings.ToLower(prefix)
+	for _, l := range lines {
+		if strings.HasPrefix(strings.ToLower(l), prefix) {
+			pattern := l[len(prefix):]
+			pattern = strings.TrimSpace(pattern)
+			if strings.HasPrefix(rootPkg, pattern) {
+				pattern = pattern[len(rootPkg):]
+				if pattern != "" && pattern[0] == '/' {
+					pattern = pattern[1:]
+				}
+				if pattern == "" {
+					pattern = "/"
+				}
+			}
+			return pattern, err
+		}
+	}
+	return "", err
+}
+
+func readFirstLines(fileName string, n int) ([]string, error) {
+	file, err := os.Open(fileName)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	lines := make([]string, 0, n)
+	scanner := bufio.NewScanner(file)
+	for i := 0; i < n && scanner.Scan(); i++ {
+		lines = append(lines, scanner.Text())
+	}
+	if err := scanner.Err(); err != nil {
+		return lines, err
+	}
+	return lines, nil
 }

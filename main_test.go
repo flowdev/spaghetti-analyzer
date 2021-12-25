@@ -51,7 +51,7 @@ func TestCut(t *testing.T) {
 			root := mustAbs(filepath.Join("testdata", spec.givenRoot))
 			mustWriteFile(filepath.Join(root, config.File), []byte(spec.givenConfig))
 			args := []string{"--root", root}
-			actualReturnCode := cut(args)
+			actualReturnCode := analyze(args)
 
 			if actualReturnCode != spec.expectedReturnCode {
 				t.Errorf("Expected return code %d but got: %d", spec.expectedReturnCode, actualReturnCode)
