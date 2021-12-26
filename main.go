@@ -91,6 +91,11 @@ func analyze(args []string) int {
 			log.Printf("FATAL - %v", err)
 			return 3
 		}
+		cfg.God, err = data.NewSimplePatternList([]string{"main"}, "god")
+		if err != nil {
+			log.Printf("FATAL - %v", err)
+			return 5
+		}
 	}
 
 	log.Printf("INFO - dependency tables for package(s): %s", docPkgs)

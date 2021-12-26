@@ -99,7 +99,7 @@ func readPatternFromFile(depFile, prefix, rootPkg string) (string, error) {
 		if strings.HasPrefix(strings.ToLower(l), prefix) {
 			pattern := l[len(prefix):]
 			pattern = strings.TrimSpace(pattern)
-			if strings.HasPrefix(rootPkg, pattern) {
+			if strings.HasPrefix(pattern, rootPkg) {
 				pattern = pattern[len(rootPkg):]
 				if pattern != "" && pattern[0] == '/' {
 					pattern = pattern[1:]
