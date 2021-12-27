@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/flowdev/spaghetti-analyzer/data"
+	"github.com/flowdev/spaghetti-cutter/data"
 )
 
 // FileName is the name of the statistics file (package_statistics.md).

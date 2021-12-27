@@ -8,7 +8,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/flowdev/spaghetti-analyzer/data"
+	"github.com/flowdev/spaghetti-cutter/data"
 )
 
 const (

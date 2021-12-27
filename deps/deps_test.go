@@ -6,11 +6,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/flowdev/spaghetti-analyzer/data"
 	"github.com/flowdev/spaghetti-analyzer/deps"
 	"github.com/flowdev/spaghetti-analyzer/parse"
-	"github.com/flowdev/spaghetti-analyzer/x/config"
 	"github.com/flowdev/spaghetti-analyzer/x/pkgs"
+	"github.com/flowdev/spaghetti-cutter/data"
+	"github.com/flowdev/spaghetti-cutter/x/config"
 )
 
 func TestFill(t *testing.T) {

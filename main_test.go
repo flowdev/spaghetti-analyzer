@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/flowdev/spaghetti-analyzer/x/config"
+	"github.com/flowdev/spaghetti-cutter/x/config"
 )
 
 func TestCut(t *testing.T) {

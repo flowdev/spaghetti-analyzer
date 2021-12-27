@@ -3,9 +3,9 @@ package deps
 import (
 	"strings"
 
-	"github.com/flowdev/spaghetti-analyzer/data"
-	"github.com/flowdev/spaghetti-analyzer/x/config"
 	"github.com/flowdev/spaghetti-analyzer/x/pkgs"
+	"github.com/flowdev/spaghetti-cutter/data"
+	"github.com/flowdev/spaghetti-cutter/x/config"
 )
 
 // Fill fills the dependency map of the given package.
