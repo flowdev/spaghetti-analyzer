@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/flowdev/spaghetti-analyzer/analdata"
 	"github.com/flowdev/spaghetti-cutter/data"
 )
 
@@ -31,7 +32,7 @@ const (
 // - number of dependencies including transitive dependencies
 // - number of packages using it
 // - maximum and minimum score for encapsulating/hiding transitive packages
-func Generate(depMap data.DependencyMap) string {
+func Generate(depMap analdata.DependencyMap) string {
 	if len(depMap) == 0 {
 		log.Printf("INFO - Won't write statistics because there are no dependencies.")
 		return ""
@@ -182,7 +183,7 @@ func sortedKeys(m map[string]map[string]struct{}) []string {
 	return keys
 }
 
-func allDependencies(depMap data.DependencyMap) map[string]map[string]struct{} {
+func allDependencies(depMap analdata.DependencyMap) map[string]map[string]struct{} {
 	allDeps := make(map[string]map[string]struct{}, len(depMap))
 	for pkg := range depMap {
 		allPkgDeps := make(map[string]struct{}, 128)
@@ -192,7 +193,7 @@ func allDependencies(depMap data.DependencyMap) map[string]map[string]struct{} {
 	return allDeps
 }
 
-func addRecursiveDeps(allPkgDeps map[string]struct{}, startPkg, excludePkg string, depMap data.DependencyMap) {
+func addRecursiveDeps(allPkgDeps map[string]struct{}, startPkg, excludePkg string, depMap analdata.DependencyMap) {
 	if startPkg == excludePkg {
 		return
 	}
@@ -209,7 +210,7 @@ func addRecursiveDeps(allPkgDeps map[string]struct{}, startPkg, excludePkg strin
 	}
 }
 
-func pkgUsers(pkg string, depMap data.DependencyMap) []string {
+func pkgUsers(pkg string, depMap analdata.DependencyMap) []string {
 	users := make([]string, 0, len(depMap))
 	for p, imps := range depMap {
 		if _, ok := imps.Imports[pkg]; ok {
@@ -220,7 +221,7 @@ func pkgUsers(pkg string, depMap data.DependencyMap) []string {
 	return users
 }
 
-func maxScore(pkg string, imps map[string]struct{}, users []string, depMap data.DependencyMap,
+func maxScore(pkg string, imps map[string]struct{}, users []string, depMap analdata.DependencyMap,
 ) (int, map[string]map[string]struct{}) {
 	sc := 0
 	sm := make(map[string]map[string]struct{}, len(users))
@@ -235,7 +236,7 @@ func maxScore(pkg string, imps map[string]struct{}, users []string, depMap data.
 	return sc, sm
 }
 
-func minScore(pkg string, imps map[string]struct{}, users []string, depMap data.DependencyMap) map[string]struct{} {
+func minScore(pkg string, imps map[string]struct{}, users []string, depMap analdata.DependencyMap) map[string]struct{} {
 	if len(users) == 0 {
 		return nil
 	}
@@ -247,7 +248,7 @@ func minScore(pkg string, imps map[string]struct{}, users []string, depMap data.
 	return minus(imps, overlap(imps, usrsDeps))
 }
 
-func depsWithoutPkg(startPkg, excludePkg string, depMap data.DependencyMap) map[string]struct{} {
+func depsWithoutPkg(startPkg, excludePkg string, depMap analdata.DependencyMap) map[string]struct{} {
 	usrDeps := make(map[string]struct{}, 128)
 	addRecursiveDeps(usrDeps, startPkg, excludePkg, depMap)
 	return usrDeps
@@ -279,7 +280,7 @@ func addToFirst(all, m map[string]struct{}) {
 	}
 }
 
-func writeImportLinks(sb *strings.Builder, imps map[string]data.PkgType, depMap data.DependencyMap) {
+func writeImportLinks(sb *strings.Builder, imps map[string]data.PkgType, depMap analdata.DependencyMap) {
 	sl := make([]string, 0, len(imps))
 	for imp := range imps {
 		sl = append(sl, imp)
@@ -287,7 +288,7 @@ func writeImportLinks(sb *strings.Builder, imps map[string]data.PkgType, depMap 
 	writeFragmentLinks(sb, sl, depMap)
 }
 
-func writePackageLinks(sb *strings.Builder, pkgs map[string]struct{}, depMap data.DependencyMap) {
+func writePackageLinks(sb *strings.Builder, pkgs map[string]struct{}, depMap analdata.DependencyMap) {
 	sl := make([]string, 0, len(pkgs))
 	for pkg := range pkgs {
 		sl = append(sl, pkg)
@@ -295,7 +296,7 @@ func writePackageLinks(sb *strings.Builder, pkgs map[string]struct{}, depMap dat
 	writeFragmentLinks(sb, sl, depMap)
 }
 
-func writeFragmentLinks(sb *strings.Builder, pkgs []string, depMap data.DependencyMap) {
+func writeFragmentLinks(sb *strings.Builder, pkgs []string, depMap analdata.DependencyMap) {
 	sort.Strings(pkgs)
 	for i, p := range pkgs {
 		if i > 0 {

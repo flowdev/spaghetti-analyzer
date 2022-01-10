@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/flowdev/spaghetti-analyzer/analdata"
 	"github.com/flowdev/spaghetti-cutter/data"
 )
 
@@ -24,7 +25,7 @@ const (
 // reporting all the details in one table.
 func WriteDocs(
 	dtPkgs []string,
-	depMap data.DependencyMap,
+	depMap analdata.DependencyMap,
 	linkDocPkgs map[string]struct{},
 	rootPkg, root string,
 ) {
@@ -52,7 +53,7 @@ func writeDoc(
 	idx int,
 	links data.PatternList,
 	docFiles []string,
-	depMap data.DependencyMap,
+	depMap analdata.DependencyMap,
 	rootPkg, root string,
 ) {
 	doc := GenerateTable(idx, links, docFiles, depMap, rootPkg)
@@ -72,12 +73,12 @@ func GenerateTable(
 	idx int,
 	links data.PatternList,
 	docFiles []string,
-	depMap data.DependencyMap,
+	depMap analdata.DependencyMap,
 	rootPkg string,
 ) string {
 	startPkg := filepath.ToSlash(filepath.Dir(docFiles[idx]))
 	pattern := links[idx].Pattern
-	depMap = data.FilterDepMap(depMap, idx, links)
+	depMap = analdata.FilterDepMap(depMap, idx, links)
 	if len(depMap) == 0 {
 		log.Printf("INFO - Won't write depenency table for package %q because it has no dependencies.", pattern)
 		return ""

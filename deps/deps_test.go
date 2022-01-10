@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/flowdev/spaghetti-analyzer/analdata"
 	"github.com/flowdev/spaghetti-analyzer/deps"
 	"github.com/flowdev/spaghetti-analyzer/parse"
 	"github.com/flowdev/spaghetti-analyzer/x/pkgs"
@@ -106,7 +107,7 @@ x/tool [T] imports: x/tool/subtool [S]`,
 				t.Fatalf("Fatal parse error: %v", err)
 			}
 
-			depMap := make(data.DependencyMap, 256)
+			depMap := make(analdata.DependencyMap, 256)
 			rootPkg := parse.RootPkg(packs)
 			t.Logf("root package: %s", rootPkg)
 			pkgInfos := pkgs.UniquePackages(packs)
@@ -129,7 +130,7 @@ func mustAbs(path string) string {
 	return absPath
 }
 
-func prettyPrint(deps data.DependencyMap) string {
+func prettyPrint(deps analdata.DependencyMap) string {
 	sb := strings.Builder{}
 
 	for _, pkg := range deps.SortedPkgNames() {
@@ -192,11 +193,4 @@ func sortedImpNames(imps map[string]data.PkgType) []string {
 	}
 	sort.Strings(names)
 	return names
-}
-
-func min(a, b int) int {
-	if a <= b {
-		return a
-	}
-	return b
 }

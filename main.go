@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/flowdev/spaghetti-analyzer/analdata"
 	"github.com/flowdev/spaghetti-analyzer/deps"
 	"github.com/flowdev/spaghetti-analyzer/doc"
 	"github.com/flowdev/spaghetti-analyzer/parse"
@@ -109,7 +110,7 @@ func analyze(args []string) int {
 		return 6
 	}
 
-	depMap := make(data.DependencyMap, 256)
+	depMap := make(analdata.DependencyMap, 256)
 	rootPkg := parse.RootPkg(packs)
 	log.Printf("INFO - root package: %s", rootPkg)
 	pkgInfos := pkgs.UniquePackages(packs)
@@ -142,7 +143,7 @@ func analyze(args []string) int {
 	return 0
 }
 
-func writeStatistics(root string, depMap data.DependencyMap) {
+func writeStatistics(root string, depMap analdata.DependencyMap) {
 	log.Printf("INFO - Writing package statistics to file: %s", stat.FileName)
 	statMD := stat.Generate(depMap)
 	if statMD == "" {
@@ -171,7 +172,7 @@ func writeDirTree(root, name string, packs []*pkgs.Package) error {
 	return nil
 }
 
-func writeDepTables(docPkgs, root, rootPkg string, noLinks bool, depMap data.DependencyMap) {
+func writeDepTables(docPkgs, root, rootPkg string, noLinks bool, depMap analdata.DependencyMap) {
 	log.Print("INFO - Writing dependency tables:")
 	dtPkgs := findDepTablesAsSlice(docPkgs, root, rootPkg, "documentation")
 

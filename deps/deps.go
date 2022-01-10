@@ -3,13 +3,14 @@ package deps
 import (
 	"strings"
 
+	"github.com/flowdev/spaghetti-analyzer/analdata"
 	"github.com/flowdev/spaghetti-analyzer/x/pkgs"
 	"github.com/flowdev/spaghetti-cutter/data"
 	"github.com/flowdev/spaghetti-cutter/x/config"
 )
 
 // Fill fills the dependency map of the given package.
-func Fill(pkg *pkgs.Package, rootPkg string, cfg config.Config, depMap *data.DependencyMap) {
+func Fill(pkg *pkgs.Package, rootPkg string, cfg config.Config, depMap *analdata.DependencyMap) {
 	if pkgs.IsTestPackage(pkg) {
 		return
 	}
@@ -37,8 +38,8 @@ func importsOf(
 	pkg *pkgs.Package,
 	relPkg, strictRelPkg, rootPkg string,
 	cfg config.Config,
-) data.PkgImports {
-	imps := data.PkgImports{}
+) analdata.PkgImports {
+	imps := analdata.PkgImports{}
 
 	for _, p := range pkg.Imports {
 		if !strings.HasPrefix(p.PkgPath, rootPkg) {
