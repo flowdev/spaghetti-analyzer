@@ -43,7 +43,7 @@ func WriteDocs(
 func docFilesForPkgs(pkgs []string) []string {
 	files := make([]string, len(pkgs))
 	for i, p := range pkgs {
-		docFile := filepath.Join(data.PkgForPattern(p), FileName)
+		docFile := filepath.Join(analdata.PkgForPattern(p), FileName)
 		files[i] = docFile
 	}
 	return files

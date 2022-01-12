@@ -1,9 +1,8 @@
-# github.com/flowdev/spaghetti-cutter v0.9.7
+# github.com/flowdev/spaghetti-cutter v0.9.8
 ## explicit
+github.com/flowdev/spaghetti-cutter/config
 github.com/flowdev/spaghetti-cutter/data
-github.com/flowdev/spaghetti-cutter/x/config
 # github.com/hjson/hjson-go v3.0.1+incompatible
-## explicit
 github.com/hjson/hjson-go
 # golang.org/x/tools v0.0.0-20200417140056-c07e33ef3290
 ## explicit
