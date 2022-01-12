@@ -2,9 +2,11 @@
 
 | package | type | direct deps | all deps | users | max score | min score |
 | :- | :-: | -: | -: | -: | -: | -: |
-| [/](#root-package) | [ \[G\] ](#legend) | [7](#direct-dependencies-imports-of-root-package) | [7](#all-including-transitive-dependencies-imports-of-root-package) | 0 | 0 | 0 |
-| [deps](#package-deps) | [ \[S\] ](#legend) | [1](#direct-dependencies-imports-of-package-deps) | [1](#all-including-transitive-dependencies-imports-of-package-deps) | [1](#packages-using-importing-package-deps) | 0 | 0 |
+| [/](#root-package) | [ \[G\] ](#legend) | [8](#direct-dependencies-imports-of-root-package) | [8](#all-including-transitive-dependencies-imports-of-root-package) | 0 | 0 | 0 |
+| [deps](#package-deps) | [ \[S\] ](#legend) | [2](#direct-dependencies-imports-of-package-deps) | [2](#all-including-transitive-dependencies-imports-of-package-deps) | [1](#packages-using-importing-package-deps) | 0 | 0 |
+| [doc](#package-doc) | [ \[S\] ](#legend) | [1](#direct-dependencies-imports-of-package-doc) | [1](#all-including-transitive-dependencies-imports-of-package-doc) | [1](#packages-using-importing-package-doc) | 0 | 0 |
 | [parse](#package-parse) | [ \[S\] ](#legend) | [1](#direct-dependencies-imports-of-package-parse) | [1](#all-including-transitive-dependencies-imports-of-package-parse) | [1](#packages-using-importing-package-parse) | 0 | 0 |
+| [stat](#package-stat) | [ \[S\] ](#legend) | [1](#direct-dependencies-imports-of-package-stat) | [1](#all-including-transitive-dependencies-imports-of-package-stat) | [1](#packages-using-importing-package-stat) | 0 | 0 |
 | [tree](#package-tree) | [ \[S\] ](#legend) | [1](#direct-dependencies-imports-of-package-tree) | [1](#all-including-transitive-dependencies-imports-of-package-tree) | [1](#packages-using-importing-package-tree) | 0 | 0 |
 
 ### Legend
@@ -26,21 +28,33 @@
 
 
 #### Direct Dependencies (Imports) Of Root Package
-[deps](#package-deps), `doc`, [parse](#package-parse), `stat`, [tree](#package-tree), `x/dirs`, `x/pkgs`
+`analdata`, [deps](#package-deps), [doc](#package-doc), [parse](#package-parse), [stat](#package-stat), [tree](#package-tree), `x/dirs`, `x/pkgs`
 
 #### All (Including Transitive) Dependencies (Imports) Of Root Package
-[deps](#package-deps), `doc`, [parse](#package-parse), `stat`, [tree](#package-tree), `x/dirs`, `x/pkgs`
+`analdata`, [deps](#package-deps), [doc](#package-doc), [parse](#package-parse), [stat](#package-stat), [tree](#package-tree), `x/dirs`, `x/pkgs`
 
 ### Package deps
 
 
 #### Direct Dependencies (Imports) Of Package deps
-`x/pkgs`
+`analdata`, `x/pkgs`
 
 #### All (Including Transitive) Dependencies (Imports) Of Package deps
-`x/pkgs`
+`analdata`, `x/pkgs`
 
 #### Packages Using (Importing) Package deps
+[root](#root-package)
+
+### Package doc
+
+
+#### Direct Dependencies (Imports) Of Package doc
+`analdata`
+
+#### All (Including Transitive) Dependencies (Imports) Of Package doc
+`analdata`
+
+#### Packages Using (Importing) Package doc
 [root](#root-package)
 
 ### Package parse
@@ -53,6 +67,18 @@
 `x/pkgs`
 
 #### Packages Using (Importing) Package parse
+[root](#root-package)
+
+### Package stat
+
+
+#### Direct Dependencies (Imports) Of Package stat
+`analdata`
+
+#### All (Including Transitive) Dependencies (Imports) Of Package stat
+`analdata`
+
+#### Packages Using (Importing) Package stat
 [root](#root-package)
 
 ### Package tree
