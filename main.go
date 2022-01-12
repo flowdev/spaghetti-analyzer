@@ -17,8 +17,8 @@ import (
 	"github.com/flowdev/spaghetti-analyzer/tree"
 	"github.com/flowdev/spaghetti-analyzer/x/dirs"
 	"github.com/flowdev/spaghetti-analyzer/x/pkgs"
+	"github.com/flowdev/spaghetti-cutter/config"
 	"github.com/flowdev/spaghetti-cutter/data"
-	"github.com/flowdev/spaghetti-cutter/x/config"
 )
 
 func main() {

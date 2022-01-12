@@ -1,5 +1,7 @@
 github.com/flowdev/spaghetti-cutter v0.9.7 h1:6ZlBNu12JniYydDWaZwKqW2Td4NUn2TLzLQDiQMMYlc=
 github.com/flowdev/spaghetti-cutter v0.9.7/go.mod h1:aj1OIpHL2KRx+eCQj8UFW4/xdtswEJuZFAmO8LS6fdo=
+github.com/flowdev/spaghetti-cutter v0.9.8 h1:sW5R1hf8QNLfSqCzhIKGTe0w22pODj94ZfoZ1Qf673g=
+github.com/flowdev/spaghetti-cutter v0.9.8/go.mod h1:aj1OIpHL2KRx+eCQj8UFW4/xdtswEJuZFAmO8LS6fdo=
 github.com/hjson/hjson-go v3.0.1+incompatible h1:JwOXblcMiBbiWue7iPkoFK9oXSnW8n+qXh/0Fio6TCo=
 github.com/hjson/hjson-go v3.0.1+incompatible/go.mod h1:qsetwF8NlsTsOTwZTApNlTCerV+b2GjYRRcIk4JMFio=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
