@@ -93,7 +93,7 @@ func FindDepTables(file, title string, startPkgs []string, root, rootPkg string)
 }
 
 func readPatternFromFile(depFile, prefix, rootPkg string) (string, error) {
-	lines, err := readFirstLines(depFile, 5)
+	lines, err := readFirstLines(depFile, 15)
 	prefix = strings.ToLower(prefix)
 	for _, l := range lines {
 		if strings.HasPrefix(strings.ToLower(l), prefix) {
