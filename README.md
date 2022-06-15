@@ -1,4 +1,4 @@
-![spaghetti cutter](./spaghetti-analyzer.jpg "spaghetti cutter")
+![spaghetti analyzer](./spaghetti-analyzer.jpg "spaghetti analyzer")
 
 # spaghetti-analyzer - Win The Fight Against Spaghetti Code
 
