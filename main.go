@@ -32,7 +32,7 @@ func analyze(args []string) int {
 	const (
 		usageShort     = " (shorthand)"
 		defaultRoot    = "."
-		usageRoot      = "root directory of the project"
+		usageRoot      = "root directory of the project (NO CRAWLING is done!)"
 		defaultDoc     = "*"
 		usageDoc       = "write '" + doc.FileName + "' for packages (separated by ','; '' for none)"
 		defaultNoLinks = false
@@ -40,7 +40,7 @@ func analyze(args []string) int {
 		defaultStats   = false
 		usageStats     = "write '" + stat.FileName + "' for project"
 		defaultDirTree = false
-		usageDirTree   = "write a directory tree (starting at the current directory) to: dirtree.txt"
+		usageDirTree   = "write a directory tree (starting at 'root') to: " + tree.File
 	)
 	var startDir string
 	var docPkgs string
@@ -64,7 +64,7 @@ func analyze(args []string) int {
 		return 2
 	}
 
-	root, err := dirs.FindRoot(startDir, config.File)
+	root, err := dirs.ValidateRoot(startDir, config.File)
 	if err != nil {
 		log.Printf("FATAL - %v", err)
 		return 3
@@ -131,7 +131,7 @@ func analyze(args []string) int {
 	}
 
 	if dirTree {
-		err := writeDirTree(".", path.Base(rootPkg), packs)
+		err := writeDirTree(root, path.Base(rootPkg), packs)
 		if err != nil {
 			log.Printf("FATAL - %v", err)
 			return 7

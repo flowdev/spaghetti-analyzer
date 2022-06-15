@@ -9,32 +9,24 @@ import (
 	"strings"
 )
 
-// FindRoot finds the root of a project.
-// It looks for the configuration file: .spaghetti-analyzer.json
-func FindRoot(startDir, cfgFile string) (string, error) {
-	if startDir == "" {
-		startDir = "."
+// ValidateRoot validates the root of a project.
+// It looks for the configuration file '.spaghetti-cutter.hjson' in the 'root'
+// directory and returns it's absolute path or the empty string if not found.
+func ValidateRoot(root, cfgFile string) (string, error) {
+	if root == "" {
+		root = "."
 	}
-	return crawlUpAndFindDirOf(startDir, cfgFile)
-}
 
-func crawlUpAndFindDirOf(startDir string, files ...string) (string, error) {
-	absDir, err := filepath.Abs(startDir)
+	absDir, err := filepath.Abs(root)
 	if err != nil {
-		return "", fmt.Errorf("unable to find absolute directory (for %q): %w", startDir, err)
+		return "", fmt.Errorf("unable to find absolute directory (for %q): %w", root, err)
 	}
-	volName := filepath.VolumeName(absDir)
-	oldDir := "" // set to impossible value first!
 
-	for ; absDir != volName && absDir != oldDir; absDir = filepath.Dir(absDir) {
-		for _, file := range files {
-			p := filepath.Join(absDir, file)
-			if _, err = os.Stat(p); err == nil {
-				return absDir, nil
-			}
-		}
-		oldDir = absDir
+	p := filepath.Join(absDir, cfgFile)
+	if _, err = os.Stat(p); err == nil {
+		return absDir, nil
 	}
+
 	return "", nil
 }
 

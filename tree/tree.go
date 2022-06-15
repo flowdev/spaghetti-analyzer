@@ -26,7 +26,7 @@ const (
 
 var (
 	reSpaces   = regexp.MustCompile(`[\s]+`)
-	reFullStop = regexp.MustCompile(`([.:?!]) .*$`)
+	reFullStop = regexp.MustCompile(`([.:?!]).*$`)
 )
 
 func Generate(root, name string, exclude []string, packs []*pkgs.Package) (string, error) {
@@ -102,6 +102,7 @@ func firstSentenceOf(text string) string {
 	text = reSpaces.ReplaceAllString(text, " ")    // replace multiple spaces, tabs and new lines with a single space
 	return reFullStop.ReplaceAllString(text, "$1") // cut after first '. ', ': ', '? ' or '! '
 }
+
 func includeFile(name string, exclude []string) bool {
 	for _, ex := range exclude {
 		if m, _ := path.Match(ex, name); m {

@@ -12,27 +12,24 @@ import (
 
 const testFile = ".test-file"
 
-func TestFindRoot(t *testing.T) {
+func TestValidateRoot(t *testing.T) {
 	testDataDir := mustAbs(filepath.Join("testdata", "find-root"))
 	specs := []struct {
-		name              string
-		givenCWD          string
-		givenStartDir     string
-		givenIgnoreVendor bool
-		expectedRoot      string
+		name         string
+		givenCWD     string
+		givenRoot    string
+		expectedRoot string
 	}{
 		{
-			name:              "given-root",
-			givenCWD:          "",
-			givenStartDir:     filepath.Join("in", "some", "subdir"),
-			givenIgnoreVendor: false,
-			expectedRoot:      filepath.Join(testDataDir, "given-root", "in"),
+			name:         "given-root",
+			givenCWD:     "in",
+			givenRoot:    "",
+			expectedRoot: "",
 		}, {
-			name:              "config-file",
-			givenCWD:          filepath.Join("in", "some", "subdir"),
-			givenStartDir:     "",
-			givenIgnoreVendor: false,
-			expectedRoot:      filepath.Join(testDataDir, "config-file"),
+			name:         "config-file",
+			givenCWD:     filepath.Join("in", "some", "subdir"),
+			givenRoot:    "../../..",
+			expectedRoot: filepath.Join(testDataDir, "config-file"),
 		},
 	}
 
@@ -44,7 +41,7 @@ func TestFindRoot(t *testing.T) {
 		t.Run(spec.name, func(t *testing.T) {
 			mustChdir(filepath.Join(testDataDir, spec.name, spec.givenCWD))
 
-			actualRoot, err := dirs.FindRoot(spec.givenStartDir, testFile)
+			actualRoot, err := dirs.ValidateRoot(spec.givenRoot, testFile)
 			if err != nil {
 				t.Fatalf("expected no error but got: %v", err)
 			}
