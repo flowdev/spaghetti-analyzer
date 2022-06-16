@@ -84,29 +84,6 @@ func TestFindDepTables(t *testing.T) {
 			expectedPkgsWithDepTables: []string{
 				"with-root",
 			},
-			/*
-				}, {
-					name:           "many-packages",
-					givenStartPkgs: nil,
-					expectedPkgsWithDepTables: []string{
-						"many-packages",
-						"package1",
-						"package2",
-					},
-				}, {
-					name: "all-complexity",
-					givenStartPkgs: []string{
-						"start-pkg1", "github.com/flowdev/spaghetti-cutter/cut-it",
-					},
-					expectedPkgsWithDepTables: []string{
-						"github.com/flowdev/spaghetti-cutter/cut-it",
-						"start-pkg1",
-						"all-complexity",
-						"package1",
-						"package2",
-						"package3",
-					},
-			*/
 		},
 	}
 
