@@ -50,8 +50,8 @@ func FindDepTables(file, title string, startPkgs []string, root, rootPkg string)
 			return filepath.SkipDir
 		}
 
-		// no valid package starts with '.' and we don't want to search in testdata
-		if strings.HasPrefix(info.Name(), ".") || info.Name() == "testdata" {
+		// no valid package starts with '.' and we don't want to search in testdata or vendor dirs
+		if strings.HasPrefix(info.Name(), ".") || info.Name() == "testdata" || info.Name() == "vendor" {
 			return filepath.SkipDir
 		}
 
