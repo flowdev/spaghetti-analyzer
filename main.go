@@ -159,7 +159,7 @@ func writeStatistics(root string, depMap analdata.DependencyMap) {
 func writeDirTree(root, name string, packs []*pkgs.Package) error {
 	treeFile := filepath.Join(root, tree.File)
 	log.Printf("INFO - Writing directory tree to file: %s", treeFile)
-	tr, err := tree.Generate(root, name, []string{"vendor", "testdata", ".*"}, packs)
+	tr, err := tree.Generate(root, name, packs)
 	if err != nil {
 		log.Print("ERROR - Unable to generate directory tree")
 		return err

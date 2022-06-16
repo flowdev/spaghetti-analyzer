@@ -5,9 +5,12 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 )
+
+var excludedFiles = []string{"vendor", "testdata", ".*"}
 
 // ValidateRoot validates the root of a project.
 // It looks for the configuration file '.spaghetti-cutter.hjson' in the 'root'
@@ -82,6 +85,15 @@ func FindDepTables(file, title string, startPkgs []string, root, rootPkg string)
 		log.Printf("ERROR - Unable to walk the path %q: %v", root, err)
 	}
 	return retPkgs
+}
+
+func IncludeFile(name string) bool {
+	for _, exclude := range excludedFiles {
+		if m, _ := path.Match(exclude, name); m {
+			return false
+		}
+	}
+	return true
 }
 
 func readPatternFromFile(depFile, prefix, rootPkg string) (string, error) {

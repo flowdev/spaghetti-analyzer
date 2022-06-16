@@ -128,3 +128,41 @@ func mustAbs(path string) string {
 	}
 	return absPath
 }
+
+func TestIncludeFile(t *testing.T) {
+	specs := []struct {
+		name            string
+		givenName       string
+		expectedInclude bool
+	}{
+		{
+			name:            "empty",
+			givenName:       "",
+			expectedInclude: true,
+		}, {
+			name:            "normal",
+			givenName:       "normal",
+			expectedInclude: true,
+		}, {
+			name:            "vendor",
+			givenName:       "vendor",
+			expectedInclude: false,
+		}, {
+			name:            "testdata",
+			givenName:       "testdata",
+			expectedInclude: false,
+		}, {
+			name:            "dotFile",
+			givenName:       ".git",
+			expectedInclude: false,
+		},
+	}
+	for _, spec := range specs {
+		t.Run(spec.name, func(t *testing.T) {
+			actualInclude := dirs.IncludeFile(spec.givenName)
+			if actualInclude != spec.expectedInclude {
+				t.Errorf("expected include %t, got %t", spec.expectedInclude, actualInclude)
+			}
+		})
+	}
+}

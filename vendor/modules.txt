@@ -4,6 +4,21 @@ github.com/flowdev/spaghetti-cutter/config
 github.com/flowdev/spaghetti-cutter/data
 # github.com/hjson/hjson-go v3.0.1+incompatible
 github.com/hjson/hjson-go
+# github.com/pkg/diff v0.0.0-20210226163009-20ebb0f2a09e
+github.com/pkg/diff
+github.com/pkg/diff/ctxt
+github.com/pkg/diff/edit
+github.com/pkg/diff/intern
+github.com/pkg/diff/myers
+github.com/pkg/diff/write
+# github.com/rogpeppe/go-internal v1.8.1
+## explicit
+github.com/rogpeppe/go-internal/imports
+github.com/rogpeppe/go-internal/internal/os/execpath
+github.com/rogpeppe/go-internal/par
+github.com/rogpeppe/go-internal/testenv
+github.com/rogpeppe/go-internal/testscript
+github.com/rogpeppe/go-internal/txtar
 # golang.org/x/tools v0.0.0-20200417140056-c07e33ef3290
 ## explicit
 golang.org/x/tools/go/gcexportdata
@@ -16,3 +31,6 @@ golang.org/x/tools/internal/telemetry/event
 # golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543
 golang.org/x/xerrors
 golang.org/x/xerrors/internal
+# gopkg.in/errgo.v2 v2.1.0
+gopkg.in/errgo.v2/errors
+gopkg.in/errgo.v2/fmt/errors

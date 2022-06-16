@@ -1,0 +1,43 @@
+# generate the directory tree and compare it to the expected result:
+dirTree test-project
+cmp stdout dirtree.expected
+
+
+-- dirtree.expected --
+test-project -	
+├── cmd -	
+│   ├── exe1 -	Package exe1 is all about exe.cution first.
+│   └── exe2 -	Package exe2 is all about exe!cution second!
+└── pkg -	
+    ├── db -	Package db contains the data:base code:
+    │   ├── model -	Package model holds models?
+    │   └── store -	Package store ...
+    ├── domain1 -	Package domain1 is ...
+    └── domain2 -	Package domain2 is.
+
+-- cmd/exe1/main.go --
+// Package exe1 is all about exe.cution first. Or third.
+package main
+
+-- cmd/exe2/main.go --
+// Package exe2 is all about exe!cution second! And...
+package main
+
+-- pkg/db/package.go --
+// Package db contains the data:base code: CODE
+package db
+
+-- pkg/db/model/model.go --
+// Package model holds models? Or anything at all?
+package model
+
+-- pkg/db/store/store.go --
+package store
+
+-- pkg/domain1/domain1.go --
+// Package domain1 is ...
+package domain1
+
+-- pkg/domain2/domain2.go --
+// Package domain2 is.
+package domain2
