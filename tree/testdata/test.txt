@@ -1,6 +1,6 @@
 # generate the directory tree and compare it to the expected result:
 dirTree test-project
-cmp stdout dirtree.expected
+cmp dirtree.actual dirtree.expected
 
 
 -- dirtree.expected --

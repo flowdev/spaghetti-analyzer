@@ -1,7 +1,6 @@
 package tree_test
 
 import (
-	"fmt"
 	"go/ast"
 	"os"
 	"testing"
@@ -15,16 +14,16 @@ import (
 func TestGenerate(t *testing.T) {
 	testscript.Run(t, testscript.Params{
 		Dir: "testdata",
+		Cmds: map[string]func(*testscript.TestScript, bool, []string){
+			"dirTree": callGenerate,
+		},
+		// TestWork: true,
 	})
 }
 
-func TestMain(m *testing.M) {
-	os.Exit(testscript.RunMain(m, map[string]func() int{
-		"dirTree": callGenerate,
-	}))
-}
-
-func callGenerate() int {
+func callGenerate(ts *testscript.TestScript, _ bool, args []string) {
+	workDir := ts.Getenv("WORK")
+	treeFile := workDir + "/dirtree.actual"
 	packs := []*pkgs.Package{
 		genPkg("bla/cmd/exe1", "Package exe1 is all about exe.cution first. Or third."),
 		genPkg("bla/cmd/exe2", "Package exe2 is all about exe!cution second! And..."),
@@ -36,18 +35,19 @@ func callGenerate() int {
 	}
 
 	name := "project-root"
-	if len(os.Args) > 1 {
-		name = os.Args[1]
+	if len(args) > 0 {
+		name = args[0]
 	}
 
-	output, err := tree.Generate(".", name, packs)
+	output, err := tree.Generate(workDir, name, packs)
 	if err != nil {
-		fmt.Printf("ERROR: Unable to generate directory tree: %v", err)
-		return 1
+		ts.Fatalf("ERROR: Unable to generate directory tree: %v", err)
 	}
 
-	fmt.Println(output)
-	return 0
+	err = os.WriteFile(treeFile, []byte(output+"\n"), 0666)
+	if err != nil {
+		ts.Fatalf("ERROR: Unable to write file '%s': %v", treeFile, err)
+	}
 }
 func genPkg(pkgPath, comment string) *pkgs.Package {
 	pkg := &pkgs.Package{PkgPath: pkgPath}
