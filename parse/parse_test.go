@@ -1,6 +1,7 @@
 package parse_test
 
 import (
+	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -8,54 +9,35 @@ import (
 
 	"github.com/flowdev/spaghetti-analyzer/parse"
 	"github.com/flowdev/spaghetti-analyzer/x/pkgs"
+	"github.com/rogpeppe/go-internal/testscript"
 )
 
 func TestDirTree(t *testing.T) {
-	specs := []struct {
-		name          string
-		expectedError bool
-		expectedPkgs  string
-	}{
-		{
-			name:          "happy-path",
-			expectedError: false,
-			expectedPkgs: "alltst: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/alltst | " +
-				"alltst: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/alltst [T] | " +
-				"alltst_test: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/alltst_test [T] | " +
-				"apitst: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/apitst | " +
-				"apitst_test: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/apitst_test [T] | " +
-				"main: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path | " +
-				"main: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/alltst.test [T] | " +
-				"main: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/apitst.test [T] | " +
-				"main: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/unittst.test [T] | " +
-				"unittst: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/unittst | " +
-				"unittst: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/unittst [T]",
-		}, {
-			name:          "error-path",
-			expectedError: true,
-			expectedPkgs:  "",
+	testscript.Run(t, testscript.Params{
+		Dir: "testdata",
+		Cmds: map[string]func(*testscript.TestScript, bool, []string){
+			"parseDirTree": callParseDirTree,
 		},
+		TestWork: true,
+	})
+}
+
+func callParseDirTree(ts *testscript.TestScript, _ bool, args []string) {
+	workDir := ts.Getenv("WORK")
+	pkgFile := workDir + "/packages.actual"
+	output := ""
+
+	actualPkgs, err := parse.DirTree(workDir)
+	if err != nil {
+		ts.Logf("ERROR: %v", err)
+		output = "error: true"
+	} else {
+		output = "error: false\n" + packagesAsString(actualPkgs)
 	}
 
-	for _, spec := range specs {
-		t.Run(spec.name, func(t *testing.T) {
-			actualPkgs, err := parse.DirTree(mustAbs(filepath.Join("testdata", spec.name)))
-			//t.Logf("err: %v, actualPkgs: %#v", err, actualPkgs)
-			if spec.expectedError {
-				if err != nil {
-					t.Logf("received expected error: %v", err)
-				} else {
-					t.Error("expected to receive error but didn't get one")
-				}
-			} else if err != nil {
-				t.Fatalf("received UNexpected error: %v", err)
-			}
-			actualPkgsString := packagesAsString(actualPkgs)
-			if actualPkgsString != spec.expectedPkgs {
-				t.Errorf("expected parsed packages %q, actual %q (len=%d)",
-					spec.expectedPkgs, actualPkgsString, len(actualPkgs))
-			}
-		})
+	err = os.WriteFile(pkgFile, []byte(output+"\n\n"), 0666)
+	if err != nil {
+		ts.Fatalf("ERROR: Unable to write file '%s': %v", pkgFile, err)
 	}
 }
 func packagesAsString(packs []*pkgs.Package) string {
@@ -68,7 +50,7 @@ func packagesAsString(packs []*pkgs.Package) string {
 		}
 	}
 	sort.Strings(strPkgs)
-	return strings.Join(strPkgs, " | ")
+	return strings.Join(strPkgs, "\n")
 }
 
 func TestRootPkg(t *testing.T) {
@@ -104,7 +86,7 @@ func TestRootPkg(t *testing.T) {
 		t.Run(spec.name, func(t *testing.T) {
 			actualRoot := parse.RootPkg(pkgsForPaths(spec.givenPkgPaths))
 			if actualRoot != spec.expectedRoot {
-				t.Errorf("expected common root %q, actual %q",
+				t.Errorf("expected common root %q, got %q",
 					spec.expectedRoot, actualRoot)
 			}
 		})

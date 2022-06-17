@@ -1,0 +1,23 @@
+# parse all Go files in the the directory tree and compare it to the expected result:
+parseDirTree
+cmp packages.actual packages.expected
+
+
+-- packages.expected --
+error: true
+
+-- go.mod --
+module github.com/flowdev/spaghetti-analyzer/parse/testdata/error-path
+
+go 1.16
+
+-- main.go --
+package main
+
+import (
+	"log"
+	"os"
+)
+
+func main() {
+	log.Printf("INFO - this is the main package, args: %q", os.Args[1:])

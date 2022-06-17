@@ -1,0 +1,130 @@
+# parse all Go files in the the directory tree and compare it to the expected result:
+parseDirTree
+cmp packages.actual packages.expected
+
+
+-- packages.expected --
+error: false
+alltst: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/alltst
+alltst: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/alltst [T]
+alltst_test: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/alltst_test [T]
+apitst: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/apitst
+apitst_test: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/apitst_test [T]
+main: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path
+main: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/alltst.test [T]
+main: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/apitst.test [T]
+main: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/unittst.test [T]
+unittst: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/unittst
+unittst: github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/unittst [T]
+
+-- go.mod --
+module github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path
+
+go 1.16
+
+-- main.go --
+package main
+
+import (
+	"log"
+	"os"
+
+	"github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/alltst"
+	"github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/apitst"
+)
+
+func main() {
+	doIt(os.Args[1:])
+}
+
+func doIt(args []string) {
+	log.Printf("INFO - this is the main package, args: %q", args)
+	apitst.Apitst()
+	alltst.Alltst()
+}
+
+-- alltst/alltst.go --
+package alltst
+
+import "log"
+
+// Alltst is logging its execution.
+func Alltst() {
+	log.Printf("INFO - alltst.Alltst")
+	helper()
+}
+
+func helper() {
+	log.Printf("INFO - alltst.helper")
+}
+
+-- alltst/alltst_internal_test.go --
+package alltst
+
+import (
+	"testing"
+)
+
+func TestHelper(t *testing.T) {
+	t.Log("Executing TestHelper")
+	helper()
+}
+
+-- alltst/alltst_test.go --
+package alltst_test
+
+import (
+	"testing"
+
+	"github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/alltst"
+)
+
+func TestAlltst(t *testing.T) {
+	t.Log("Executing TestAlltst")
+	alltst.Alltst()
+}
+
+-- apitst/apitst.go --
+package apitst
+
+import "log"
+
+// Apitst is logging its execution.
+func Apitst() {
+	log.Printf("INFO - apitst.Apitst")
+}
+
+-- apitst/apitst_test.go --
+package apitst_test
+
+import (
+	"testing"
+
+	"github.com/flowdev/spaghetti-analyzer/parse/testdata/happy-path/apitst"
+)
+
+func TestApitst(t *testing.T) {
+	t.Log("Executing TestApitst")
+	apitst.Apitst()
+}
+
+-- unittst/unittst.go --
+package unittst
+
+import "log"
+
+func unittst() {
+	log.Printf("INFO - unittst.unittst")
+}
+
+-- unittst/unittst_test.go --
+package unittst
+
+import (
+	"testing"
+)
+
+func TestUnittst(t *testing.T) {
+	t.Log("Executing TestUnittst")
+	unittst()
+}
