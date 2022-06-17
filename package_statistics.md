@@ -7,7 +7,7 @@
 | [doc](#package-doc) | [ \[S\] ](#legend) | [1](#direct-dependencies-imports-of-package-doc) | [1](#all-including-transitive-dependencies-imports-of-package-doc) | [1](#packages-using-importing-package-doc) | 0 | 0 |
 | [parse](#package-parse) | [ \[S\] ](#legend) | [1](#direct-dependencies-imports-of-package-parse) | [1](#all-including-transitive-dependencies-imports-of-package-parse) | [1](#packages-using-importing-package-parse) | 0 | 0 |
 | [stat](#package-stat) | [ \[S\] ](#legend) | [1](#direct-dependencies-imports-of-package-stat) | [1](#all-including-transitive-dependencies-imports-of-package-stat) | [1](#packages-using-importing-package-stat) | 0 | 0 |
-| [tree](#package-tree) | [ \[S\] ](#legend) | [1](#direct-dependencies-imports-of-package-tree) | [1](#all-including-transitive-dependencies-imports-of-package-tree) | [1](#packages-using-importing-package-tree) | 0 | 0 |
+| [tree](#package-tree) | [ \[S\] ](#legend) | [2](#direct-dependencies-imports-of-package-tree) | [2](#all-including-transitive-dependencies-imports-of-package-tree) | [1](#packages-using-importing-package-tree) | 0 | 0 |
 
 ### Legend
 
@@ -85,10 +85,10 @@
 
 
 #### Direct Dependencies (Imports) Of Package tree
-`x/pkgs`
+`x/dirs`, `x/pkgs`
 
 #### All (Including Transitive) Dependencies (Imports) Of Package tree
-`x/pkgs`
+`x/dirs`, `x/pkgs`
 
 #### Packages Using (Importing) Package tree
 [root](#root-package)

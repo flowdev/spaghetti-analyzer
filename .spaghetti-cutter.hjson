@@ -12,5 +12,6 @@
 	// document and restrict usage of external packages
 	allowOnlyIn: {
 		"golang.org/x/tools**": ["parse*", "x/pkgs*"]
+		"github.com/rogpeppe/go-internal/testscript": ["*_test"]
 	}
 }

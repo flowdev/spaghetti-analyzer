@@ -1,13 +1,13 @@
 # Dependency Table For: github.com/flowdev/spaghetti-analyzer
 
-| | a n a l d a t a - S | d e p s - S | d o c - S | p a r s e - S | s t a t - S | t r e e - S | x / d i r s - T | x / p k g s - T |
+| | a n a l d a t a - T | d e p s - S | d o c - S | p a r s e - S | s t a t - S | t r e e - S | x / d i r s - T | x / p k g s - T |
 | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| **/** | **S** | **S** | **S** | **S** | **S** | **S** | **T** | **T** |
-| deps | S | | | | | | | T |
-| doc | S | | | | | | | |
+| **/** | **T** | **S** | **S** | **S** | **S** | **S** | **T** | **T** |
+| deps | T | | | | | | | T |
+| doc | T | | | | | | | |
 | parse | | | | | | | | T |
-| stat | S | | | | | | | |
-| tree | | | | | | | | T |
+| stat | T | | | | | | | |
+| tree | | | | | | | T | T |
 
 ### Legend
 
