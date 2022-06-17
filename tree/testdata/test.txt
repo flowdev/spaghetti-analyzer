@@ -15,6 +15,11 @@ test-project -
     ├── domain1 -	Package domain1 is ...
     └── domain2 -	Package domain2 is.
 
+-- go.mod --
+module test-project
+
+go 1.16
+
 -- cmd/exe1/main.go --
 // Package exe1 is all about exe.cution first. Or third.
 package main
