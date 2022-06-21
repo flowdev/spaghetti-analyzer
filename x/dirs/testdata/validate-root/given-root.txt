@@ -1,0 +1,6 @@
+# validate the given root (2. argument) starting from the CWD (1. argument)
+# and expecting the 3. argument as result:
+validateRoot in '' ''
+
+-- in/some/subdir/other-file --
+test data

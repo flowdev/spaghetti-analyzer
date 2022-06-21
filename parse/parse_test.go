@@ -18,7 +18,7 @@ func TestDirTree(t *testing.T) {
 		Cmds: map[string]func(*testscript.TestScript, bool, []string){
 			"parseDirTree": callParseDirTree,
 		},
-		TestWork: true,
+		// TestWork: true,
 	})
 }
 

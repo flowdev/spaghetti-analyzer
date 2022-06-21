@@ -4,102 +4,77 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"testing"
 
 	"github.com/flowdev/spaghetti-analyzer/doc"
 	"github.com/flowdev/spaghetti-analyzer/x/dirs"
+	"github.com/rogpeppe/go-internal/testscript"
 )
 
 const testFile = ".test-file"
 
 func TestValidateRoot(t *testing.T) {
-	testDataDir := mustAbs(filepath.Join("testdata", "find-root"))
-	specs := []struct {
-		name         string
-		givenCWD     string
-		givenRoot    string
-		expectedRoot string
-	}{
-		{
-			name:         "given-root",
-			givenCWD:     "in",
-			givenRoot:    "",
-			expectedRoot: "",
-		}, {
-			name:         "config-file",
-			givenCWD:     filepath.Join("in", "some", "subdir"),
-			givenRoot:    "../../..",
-			expectedRoot: filepath.Join(testDataDir, "config-file"),
+	startDir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Unable to read start directory: %v", err)
+	}
+
+	testscript.Run(t, testscript.Params{
+		Dir: "testdata/validate-root",
+		Cmds: map[string]func(*testscript.TestScript, bool, []string){
+			"validateRoot": func(ts *testscript.TestScript, _ bool, args []string) {
+				workDir := ts.Getenv("WORK")
+
+				if len(args) != 3 {
+					ts.Fatalf("ERROR: Expected 3 arguments (givenCWD, givenRoot and expectedRoot) but got: : %q", args)
+				}
+				givenCWD, givenRoot, expectedRoot := args[0], args[1], args[2]
+
+				mustChdir(filepath.Join(workDir, givenCWD))
+				actualRoot, err := dirs.ValidateRoot(givenRoot, testFile)
+				mustChdir(startDir)
+				if err != nil {
+					ts.Fatalf("expected no error but got: %v", err)
+				}
+				if actualRoot != expectedRoot {
+					ts.Fatalf("expected project root %q, got %q",
+						expectedRoot, actualRoot)
+				}
+			},
 		},
-	}
-
-	initDir := mustAbs(".")
-	t.Cleanup(func() {
-		mustChdir(initDir)
+		// TestWork: true,
 	})
-	for _, spec := range specs {
-		t.Run(spec.name, func(t *testing.T) {
-			mustChdir(filepath.Join(testDataDir, spec.name, spec.givenCWD))
-
-			actualRoot, err := dirs.ValidateRoot(spec.givenRoot, testFile)
-			if err != nil {
-				t.Fatalf("expected no error but got: %v", err)
-			}
-			if actualRoot != spec.expectedRoot {
-				t.Errorf("expected project root %q, actual %q",
-					spec.expectedRoot, actualRoot)
-			}
-		})
-	}
+	mustChdir(startDir)
 }
 
 func TestFindDepTables(t *testing.T) {
-	specs := []struct {
-		name                      string
-		givenStartPkgs            []string
-		expectedPkgsWithDepTables []string
-	}{
-		{
-			name:           "minimal",
-			givenStartPkgs: nil,
-			expectedPkgsWithDepTables: []string{
-				"minimal",
-			},
-		}, {
-			name:           "with-start-pkgs",
-			givenStartPkgs: []string{"start-pkg"},
-			expectedPkgsWithDepTables: []string{
-				"start-pkg",
-				"with-start-pkgs",
-			},
-		}, {
-			name:           "with-pattern",
-			givenStartPkgs: nil,
-			expectedPkgsWithDepTables: []string{
-				"with-pattern/bla*blue/**",
-			},
-		}, {
-			name:           "with-root",
-			givenStartPkgs: nil,
-			expectedPkgsWithDepTables: []string{
-				"with-root",
+	testscript.Run(t, testscript.Params{
+		Dir: "testdata/find-dep-tables",
+		Cmds: map[string]func(*testscript.TestScript, bool, []string){
+			"findDepTables": func(ts *testscript.TestScript, _ bool, args []string) {
+				workDir := ts.Getenv("WORK")
+				if len(args) != 2 {
+					ts.Fatalf("ERROR: Expected 2 arguments (givenStartPkgs and expectedPkgs) but got: : %q", args)
+				}
+				givenStartPkgs, expectedPkgs := strings.Split(args[0], ","), strings.Split(args[1], ",")
+				if args[0] == "" {
+					givenStartPkgs = nil
+				}
+
+				rootPkg := "github.com/flowdev/spaghetti-analyzer"
+				actualPkgsWithDepTables := dirs.FindDepTables(doc.FileName, doc.Title, givenStartPkgs, workDir, rootPkg)
+				ts.Logf("actualPkgsWithDepTables: %#v", actualPkgsWithDepTables)
+				checkPackages(ts, expectedPkgs, actualPkgsWithDepTables)
 			},
 		},
-	}
-
-	testDataDir := filepath.Join("testdata", "find-dep-tables")
-	rootPkg := "github.com/flowdev/spaghetti-analyzer"
-	for _, spec := range specs {
-		t.Run(spec.name, func(t *testing.T) {
-			actualPkgsWithDepTables := dirs.FindDepTables(doc.FileName, doc.Title, spec.givenStartPkgs, filepath.Join(testDataDir, spec.name), rootPkg)
-			checkPackages(t, spec.expectedPkgsWithDepTables, actualPkgsWithDepTables)
-		})
-	}
+		// TestWork: true,
+	})
 }
 
-func checkPackages(t *testing.T, expectedPkgs []string, actualPkgMap map[string]struct{}) {
+func checkPackages(ts *testscript.TestScript, expectedPkgs []string, actualPkgMap map[string]struct{}) {
 	if len(expectedPkgs) != len(actualPkgMap) {
-		t.Errorf("expected %d packages with dependency tables, got: %d", len(expectedPkgs), len(actualPkgMap))
+		ts.Fatalf("expected %d packages with dependency tables, got: %d", len(expectedPkgs), len(actualPkgMap))
 	}
 	packs := make([]string, 0, len(actualPkgMap))
 	for p := range actualPkgMap {
@@ -109,7 +84,7 @@ func checkPackages(t *testing.T, expectedPkgs []string, actualPkgMap map[string]
 
 	for i, p := range expectedPkgs {
 		if p != packs[i] {
-			t.Errorf("expected package with dependency tables at index %d is %q, got: %q", i, p, packs[i])
+			ts.Fatalf("expected package with dependency tables at index %d is %q, got: %q", i, p, packs[i])
 		}
 	}
 }
@@ -119,14 +94,6 @@ func mustChdir(path string) {
 	if err != nil {
 		panic(err.Error())
 	}
-}
-
-func mustAbs(path string) string {
-	absPath, err := filepath.Abs(path)
-	if err != nil {
-		panic(err.Error())
-	}
-	return absPath
 }
 
 func TestIncludeFile(t *testing.T) {

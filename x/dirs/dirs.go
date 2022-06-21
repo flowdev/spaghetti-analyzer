@@ -3,6 +3,7 @@ package dirs
 import (
 	"bufio"
 	"fmt"
+	"io/fs"
 	"log"
 	"os"
 	"path"
@@ -44,8 +45,8 @@ func FindDepTables(file, title string, startPkgs []string, root, rootPkg string)
 	}
 
 	// walk the file system to find more 'file's
-	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
-		if !info.IsDir() { // we are only interested in directories
+	err := filepath.WalkDir(root, func(path string, entry fs.DirEntry, err error) error {
+		if !entry.IsDir() { // we are only interested in directories
 			return nil
 		}
 		if err != nil {
@@ -53,8 +54,8 @@ func FindDepTables(file, title string, startPkgs []string, root, rootPkg string)
 			return filepath.SkipDir
 		}
 
-		// no valid package starts with '.' and we don't want to search in testdata or vendor dirs
-		if strings.HasPrefix(info.Name(), ".") || info.Name() == "testdata" || info.Name() == "vendor" {
+		// should we include the dir in the search at all?
+		if !IncludeFile(entry.Name()) {
 			return filepath.SkipDir
 		}
 
