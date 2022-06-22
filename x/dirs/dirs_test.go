@@ -15,11 +15,6 @@ import (
 const testFile = ".test-file"
 
 func TestValidateRoot(t *testing.T) {
-	startDir, err := os.Getwd()
-	if err != nil {
-		t.Fatalf("Unable to read start directory: %v", err)
-	}
-
 	testscript.Run(t, testscript.Params{
 		Dir: "testdata/validate-root",
 		Cmds: map[string]func(*testscript.TestScript, bool, []string){
@@ -31,9 +26,7 @@ func TestValidateRoot(t *testing.T) {
 				}
 				givenCWD, givenRoot, expectedRoot := args[0], args[1], args[2]
 
-				mustChdir(filepath.Join(workDir, givenCWD))
-				actualRoot, err := dirs.ValidateRoot(givenRoot, testFile)
-				mustChdir(startDir)
+				actualRoot, err := dirs.ValidateRoot(filepath.Join(workDir, givenCWD, givenRoot), testFile)
 				if err != nil {
 					ts.Fatalf("expected no error but got: %v", err)
 				}
@@ -45,7 +38,6 @@ func TestValidateRoot(t *testing.T) {
 		},
 		// TestWork: true,
 	})
-	mustChdir(startDir)
 }
 
 func TestFindDepTables(t *testing.T) {
