@@ -78,7 +78,7 @@ func writeDoc(
 	depMap analdata.DependencyMap,
 	rootPkg, root string,
 ) {
-	doc := GenerateTable(idx, links, docFiles, depMap, rootPkg)
+	doc := generateTable(idx, links, docFiles, depMap, rootPkg)
 	if doc == "" {
 		return
 	}
@@ -91,8 +91,8 @@ func writeDoc(
 	}
 }
 
-// GenerateTable generates the dependency matrix for the idx package(s) from links.
-func GenerateTable(
+// generateTable generates the dependency matrix for the idx package from links.
+func generateTable(
 	idx int,
 	links data.PatternList,
 	docFiles []string,

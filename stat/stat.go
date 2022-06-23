@@ -19,11 +19,37 @@ var mapValue struct{} = struct{}{}
 
 // Constants for the title of the sub-sections of the stat docs.
 const (
+	Header = `# Package Statistics
+
+| package | type | direct deps | all deps | users | max score | min score |
+| :- | :-: | -: | -: | -: | -: | -: |
+`
 	titleImps     = `Direct Dependencies (Imports) Of `
 	titleAllImps  = `All (Including Transitive) Dependencies (Imports) Of `
 	titleUsers    = `Packages Using (Importing) `
 	titleMaxScore = `Packages Shielded From Users Of `
 	titleMinScore = `Packages Shielded From All Users Of `
+	// Legend is the explanation for the statistics
+	Legend = `
+### Legend
+
+* package - name of the internal package without the part common to all packages.
+* type - type of the package:
+  * [G] - God package (can use all packages)
+  * [D] - Database package (can only use tool and other database packages)
+  * [T] - Tool package (foundational, no dependencies)
+  * [S] - Standard package (can only use tool and database packages)
+* direct deps - number of internal packages directly imported by this one.
+* all deps - number of transitive internal packages imported by this package.
+* users - number of internal packages that import this one.
+* max score - sum of the numbers of packages hidden from user packages.
+* min score - number of packages hidden from all user packages combined.
+`
+)
+
+var (
+	notAlphaNums = regexp.MustCompile(`[^a-z0-9 -]+`) // is constant and would blow up at first test
+	spaces       = regexp.MustCompile(`[ ]+`)         // is constant and would blow up at first test
 )
 
 // Generate creates some statistics for each package in the dependency map:
@@ -43,11 +69,7 @@ func Generate(depMap analdata.DependencyMap) string {
 
 	sb := &strings.Builder{}
 	sb2 := &strings.Builder{}
-	sb.WriteString(`# Package Statistics
-
-| package | type | direct deps | all deps | users | max score | min score |
-| :- | :-: | -: | -: | -: | -: | -: |
-`)
+	sb.WriteString(Header)
 
 	for _, pkg := range pkgNames {
 		pkgImps := depMap[pkg]
@@ -154,21 +176,7 @@ func Generate(depMap analdata.DependencyMap) string {
 		}
 	}
 
-	sb.WriteString(`
-### Legend
-
-* package - name of the internal package without the part common to all packages.
-* type - type of the package:
-  * [G] - God package (can use all packages)
-  * [D] - Database package (can only use tool and other database packages)
-  * [T] - Tool package (foundational, no dependencies)
-  * [S] - Standard package (can only use tool and database packages)
-* direct deps - number of internal packages directly imported by this one.
-* all deps - number of transitive internal packages imported by this package.
-* users - number of internal packages that import this one.
-* max score - sum of the numbers of packages hidden from user packages.
-* min score - number of packages hidden from all user packages combined.
-`)
+	sb.WriteString(Legend)
 	sb.WriteString(sb2.String())
 	sb.WriteString("\n")
 	return sb.String()
@@ -327,11 +335,6 @@ func pkgName(pkg string) string {
 func fragmentLink(pkg string) string {
 	return `[` + pkgName(pkg) + `](` + fragment(title(pkg)) + `)`
 }
-
-var (
-	notAlphaNums = regexp.MustCompile(`[^a-z0-9 -]+`) // is constant and would blow up at first test
-	spaces       = regexp.MustCompile(`[ ]+`)         // is constant and would blow up at first test
-)
 
 func fragment(s string) string {
 	return `#` + spaces.ReplaceAllString(
