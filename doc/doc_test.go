@@ -4,68 +4,94 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/pkg/diff"
+	"github.com/rogpeppe/go-internal/testscript"
 
 	"github.com/flowdev/spaghetti-analyzer/analdata"
 	"github.com/flowdev/spaghetti-analyzer/doc"
 	"github.com/flowdev/spaghetti-cutter/data"
 )
 
-func TestGenerateTable(t *testing.T) {
-	specs := []struct {
-		name          string
-		givenIdx      int
-		givenLinks    data.PatternList
-		givenDocFiles []string
-		givenDepMap   analdata.DependencyMap
-		expectedDoc   string
-	}{
-		{
-			name:          "minimal",
-			givenIdx:      0,
-			givenLinks:    newPatternList(t, "a"),
-			givenDocFiles: []string{"./" + doc.FileName},
-			givenDepMap: analdata.DependencyMap{
-				"a": analdata.PkgImports{
-					PkgType: data.TypeGod,
-					Imports: map[string]data.PkgType{
-						"b": data.TypeTool,
-					},
-				},
-			},
-			expectedDoc: doc.Title + `github.com/flowdev/tst/a
-
-| | b - T |
-| :- | :- |
-| **a** | **T** |
-` + doc.Legend,
+var testDepMap = analdata.DependencyMap{
+	"a": analdata.PkgImports{
+		PkgType: data.TypeGod,
+		Imports: map[string]data.PkgType{
+			"b/c/d":   data.TypeTool,
+			"epsilon": data.TypeTool,
+			"escher":  data.TypeTool,
+			"f":       data.TypeStandard,
+			"z":       data.TypeDB,
 		},
-	}
+	},
+	"z": analdata.PkgImports{
+		PkgType: data.TypeDB,
+		Imports: map[string]data.PkgType{
+			"b/c/d":   data.TypeTool,
+			"epsilon": data.TypeTool,
+			"escher":  data.TypeTool,
+			"x":       data.TypeDB,
+		},
+	},
+	"x": analdata.PkgImports{
+		PkgType: data.TypeDB,
+		Imports: map[string]data.PkgType{
+			"b/c/d":  data.TypeTool,
+			"escher": data.TypeTool,
+		},
+	},
+	"m": analdata.PkgImports{
+		PkgType: data.TypeStandard,
+		Imports: map[string]data.PkgType{
+			"b/c/d": data.TypeTool,
+			"x":     data.TypeDB,
+		},
+	},
+	"f": analdata.PkgImports{
+		PkgType: data.TypeStandard,
+		Imports: map[string]data.PkgType{
+			"f/g": data.TypeStandard,
+			"f/h": data.TypeStandard,
+			"f/i": data.TypeStandard,
+		},
+	},
+	"f/g": analdata.PkgImports{
+		PkgType: data.TypeStandard,
+		Imports: map[string]data.PkgType{
+			"escher": data.TypeTool,
+			"f/j":    data.TypeStandard,
+			"x":      data.TypeDB,
+		},
+	},
+	"f/h": analdata.PkgImports{
+		PkgType: data.TypeStandard,
+		Imports: map[string]data.PkgType{
+			"m": data.TypeStandard,
+			"x": data.TypeDB,
+		},
+	},
+	"f/i": analdata.PkgImports{
+		PkgType: data.TypeStandard,
+		Imports: map[string]data.PkgType{
+			"escher": data.TypeTool,
+		},
+	},
+}
+
+func TestWriteDocs(t *testing.T) {
 	rootPkg := "github.com/flowdev/tst"
-	for _, spec := range specs {
-		t.Run(spec.name, func(t *testing.T) {
-			actualDoc := doc.GenerateTable(spec.givenIdx, spec.givenLinks, spec.givenDocFiles, spec.givenDepMap, rootPkg)
-			if actualDoc != spec.expectedDoc {
-				t.Error(diffDocs(t, spec.expectedDoc, actualDoc))
-			}
-		})
-	}
-}
+	testscript.Run(t, testscript.Params{
+		Dir: "testdata",
+		Cmds: map[string]func(*testscript.TestScript, bool, []string){
+			"writeDocs": func(ts *testscript.TestScript, _ bool, args []string) {
+				workDir := ts.Getenv("WORK")
 
-func newPatternList(t *testing.T, pkgs ...string) data.PatternList {
-	pl, err := data.NewSimplePatternList(pkgs, "test")
-	if err != nil {
-		t.Fatalf("got unexpected error: %v", err)
-	}
-	return pl
-}
+				if len(args) != 1 {
+					ts.Fatalf("ERROR: Expected 1 argument (givenDependencyTablePkgs) but got: : %q", args)
+				}
+				givenDependencyTablePkgs := strings.Split(args[0], ",")
 
-func diffDocs(t *testing.T, want, got string) string {
-	buf := &strings.Builder{}
-
-	err := diff.Text("expected", "got", want, got, buf)
-	if err != nil {
-		t.Fatalf("unable to diff result: %v", err)
-	}
-	return buf.String()
+				doc.WriteDocs(givenDependencyTablePkgs, testDepMap, rootPkg, workDir)
+			},
+		},
+		TestWork: false,
+	})
 }

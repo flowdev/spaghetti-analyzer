@@ -16,7 +16,7 @@ func TestGenerate(t *testing.T) {
 		Cmds: map[string]func(*testscript.TestScript, bool, []string){
 			"dirTree": callGenerate,
 		},
-		// TestWork: true,
+		TestWork: false,
 	})
 }
 

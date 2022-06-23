@@ -1,0 +1,101 @@
+# write the dependency table for the given packages
+writeDocs 'f/i,a,f,independent'
+cmp f/i/package_dependencies.md f/i/package_dependencies.expected
+cmp f/package_dependencies.md f/package_dependencies.expected
+cmp a/package_dependencies.md a/package_dependencies.expected
+! exists independent/package_dependencies.md
+
+
+-- a/package_dependencies.md --
+
+-- a/package_dependencies.expected --
+# Dependency Table For: github.com/flowdev/tst/a
+
+| | b / c / d - T | e p s i l o n - T | e s c h e r - T | [f - S](../f/package_dependencies.md)  | x - D | z - D |
+| :- | :- | :- | :- | :- | :- | :- |
+| **a** | **T** | **T** | **T** | **S** | | **D** |
+| `x` | `T` | | `T` | | | |
+| `z` | `T` | `T` | `T` | | `D` | |
+
+### Legend
+
+* Rows - Importing packages
+* Columns - Imported packages
+
+
+#### Meaning Of Row And Row Header Formatting
+
+* **Bold** - God package (can use all packages)
+* `Code` - Database package (can only use tool and other database packages)
+* _Italic_ - Tool package (foundational, no dependencies)
+* No formatting - Standard package (can only use tool and database packages)
+
+
+#### Meaning Of Letters In Table Columns
+
+* G - God package (can use all packages)
+* D - Database package (can only use tool and other database packages)
+* T - Tool package (foundational, no dependencies)
+* S - Standard package (can only use tool and database packages)
+-- f/package_dependencies.md --
+
+-- f/package_dependencies.expected --
+# Dependency Table For: github.com/flowdev/tst/f
+
+| | b / c / d - T | e s c h e r - T | f / g - S | f / h - S | [f / i - S](i/package_dependencies.md)  | f / j - S | m - S | x - D |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| f | | | S | S | S | | | |
+| f/g | | T | | | | S | | D |
+| f/h | | | | | | | S | D |
+| m | T | | | | | | | D |
+| `x` | `T` | `T` | | | | | | |
+
+### Legend
+
+* Rows - Importing packages
+* Columns - Imported packages
+
+
+#### Meaning Of Row And Row Header Formatting
+
+* **Bold** - God package (can use all packages)
+* `Code` - Database package (can only use tool and other database packages)
+* _Italic_ - Tool package (foundational, no dependencies)
+* No formatting - Standard package (can only use tool and database packages)
+
+
+#### Meaning Of Letters In Table Columns
+
+* G - God package (can use all packages)
+* D - Database package (can only use tool and other database packages)
+* T - Tool package (foundational, no dependencies)
+* S - Standard package (can only use tool and database packages)
+-- f/i/package_dependencies.md --
+
+-- f/i/package_dependencies.expected --
+# Dependency Table For: github.com/flowdev/tst/f/i
+
+| | e s c h e r - T |
+| :- | :- |
+| f/i | T |
+
+### Legend
+
+* Rows - Importing packages
+* Columns - Imported packages
+
+
+#### Meaning Of Row And Row Header Formatting
+
+* **Bold** - God package (can use all packages)
+* `Code` - Database package (can only use tool and other database packages)
+* _Italic_ - Tool package (foundational, no dependencies)
+* No formatting - Standard package (can only use tool and database packages)
+
+
+#### Meaning Of Letters In Table Columns
+
+* G - God package (can use all packages)
+* D - Database package (can only use tool and other database packages)
+* T - Tool package (foundational, no dependencies)
+* S - Standard package (can only use tool and database packages)

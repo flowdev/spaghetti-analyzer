@@ -34,7 +34,7 @@ func analyze(args []string) int {
 		defaultRoot    = "."
 		usageRoot      = "root directory of the project (NO CRAWLING is done!)"
 		defaultDoc     = "*"
-		usageDoc       = "write '" + doc.FileName + "' for packages (separated by ','; '' for none)"
+		usageDoc       = "write '" + doc.FileName + "' for packages (separated by ','; '' for none; '*' for update all existing)"
 		defaultNoLinks = false
 		usageNoLinks   = "don't use links in '" + doc.FileName + "' files"
 		defaultStats   = false
@@ -176,11 +176,13 @@ func writeDepTables(docPkgs, root, rootPkg string, noLinks bool, depMap analdata
 	log.Print("INFO - Writing dependency tables:")
 	dtPkgs := findDepTablesAsSlice(docPkgs, root, rootPkg, "documentation")
 
-	linkDocPkgs := map[string]struct{}{}
-	if !noLinks {
-		linkDocPkgs = dirs.FindDepTables(doc.FileName, doc.Title, dtPkgs, root, rootPkg)
+	if noLinks {
+		for _, dtPkg := range dtPkgs {
+			doc.WriteDocs([]string{dtPkg}, depMap, rootPkg, root)
+		}
+	} else {
+		doc.WriteDocs(dtPkgs, depMap, rootPkg, root)
 	}
-	doc.WriteDocs(dtPkgs, depMap, linkDocPkgs, rootPkg, root)
 }
 
 func findDepTablesAsSlice(pkgNames, root, rootPkg, pkgType string) []string {

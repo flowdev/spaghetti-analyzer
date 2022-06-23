@@ -1,7 +1,6 @@
 package dirs_test
 
 import (
-	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -36,7 +35,7 @@ func TestValidateRoot(t *testing.T) {
 				}
 			},
 		},
-		// TestWork: true,
+		TestWork: false,
 	})
 }
 
@@ -60,7 +59,7 @@ func TestFindDepTables(t *testing.T) {
 				checkPackages(ts, expectedPkgs, actualPkgsWithDepTables)
 			},
 		},
-		// TestWork: true,
+		TestWork: false,
 	})
 }
 
@@ -78,13 +77,6 @@ func checkPackages(ts *testscript.TestScript, expectedPkgs []string, actualPkgMa
 		if p != packs[i] {
 			ts.Fatalf("expected package with dependency tables at index %d is %q, got: %q", i, p, packs[i])
 		}
-	}
-}
-
-func mustChdir(path string) {
-	err := os.Chdir(path)
-	if err != nil {
-		panic(err.Error())
 	}
 }
 

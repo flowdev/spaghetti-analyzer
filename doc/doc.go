@@ -44,12 +44,11 @@ const (
 
 // WriteDocs generates documentation for the packages 'dtPkgs' and writes it to
 // files.
-// If linkDocPkgs is filled it will be used to link to packages instead of
-// reporting all the details in one table.
+// If dtPkgs contains more than 1 package, the others will be used as link targets
+// instead of reporting all the details in one table.
 func WriteDocs(
 	dtPkgs []string,
 	depMap analdata.DependencyMap,
-	linkDocPkgs map[string]struct{},
 	rootPkg, root string,
 ) {
 	pl, err := data.NewSimplePatternList(dtPkgs, "--doc")
@@ -83,8 +82,9 @@ func writeDoc(
 	if doc == "" {
 		return
 	}
-	log.Printf("INFO - Write dependency table to file: %s", docFiles[idx])
-	docFile := filepath.Join(root, docFiles[idx])
+	docFile := docFiles[idx]
+	log.Printf("INFO - Write dependency table to file: %s", docFile)
+	docFile = filepath.Join(root, docFile)
 	err := ioutil.WriteFile(docFile, []byte(doc), 0644)
 	if err != nil {
 		log.Printf("ERROR - Unable to write dependency table to file %s: %v", docFile, err)
