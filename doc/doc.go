@@ -17,6 +17,29 @@ const (
 	FileName = "package_dependencies.md"
 	// Title is the mark down title of the package dependencies
 	Title = `# Dependency Table For: `
+	// Legend is the explanation for the dependency table
+	Legend = `
+### Legend
+
+* Rows - Importing packages
+* Columns - Imported packages
+
+
+#### Meaning Of Row And Row Header Formatting
+
+* **Bold** - God package (can use all packages)
+` + "* `Code` - Database package (can only use tool and other database packages)" + `
+* _Italic_ - Tool package (foundational, no dependencies)
+* No formatting - Standard package (can only use tool and database packages)
+
+
+#### Meaning Of Letters In Table Columns
+
+* G - God package (can use all packages)
+* D - Database package (can only use tool and other database packages)
+* T - Tool package (foundational, no dependencies)
+* S - Standard package (can only use tool and database packages)
+`
 )
 
 // WriteDocs generates documentation for the packages 'dtPkgs' and writes it to
@@ -159,29 +182,7 @@ func GenerateTable(
 		sb.WriteString("|\n")
 	}
 
-	legend := `
-### Legend
-
-* Rows - Importing packages
-* Columns - Imported packages
-
-
-#### Meaning Of Row And Row Header Formatting
-
-* **Bold** - God package (can use all packages)
-` + "* `Code` - Database package (can only use tool and other database packages)" + `
-* _Italic_ - Tool package (foundational, no dependencies)
-* No formatting - Standard package (can only use tool and database packages)
-
-
-#### Meaning Of Letters In Table Columns
-
-* G - God package (can use all packages)
-* D - Database package (can only use tool and other database packages)
-* T - Tool package (foundational, no dependencies)
-* S - Standard package (can only use tool and database packages)
-`
-	sb.WriteString(legend)
+	sb.WriteString(Legend)
 	return sb.String()
 }
 
