@@ -1,0 +1,204 @@
+# call fill with configuration
+fill '{"tool": ["x/*"], "db": ["db/*"]}'
+cmp deps.actual deps.expected
+
+-- deps.expected --
+/ [G] imports: db/store [D]
+/ [G] imports: domain1 [S]
+/ [G] imports: domain2 [S]
+db/store [D] imports: db/model [D]
+db/store [D] imports: db/store/substore [S]
+db/store [D] imports: x/tool [T]
+db/store [D] imports: x/tool2 [T]
+domain1 [S] imports: db/store [D]
+domain1 [S] imports: x/tool [T]
+domain2 [S] imports: db/store [D]
+domain2 [S] imports: x/tool2 [T]
+x/tool [T] imports: x/tool/subtool [S]
+
+-- domain2/domain2.go --
+package domain2
+
+import (
+	"github.com/flowdev/spaghetti-analyzer/deps/testdata/half-pkgs-proj/db/store"
+	"github.com/flowdev/spaghetti-analyzer/deps/testdata/half-pkgs-proj/x/tool2"
+)
+
+func HandleDomain2Route1(s *store.Store) {
+	tool2.Tool2()
+	s.GetAllProducts()
+}
+
+func HandleDomain2Route2(s *store.Store) {
+	ps := s.GetAllProducts()
+	s.SaveProduct(ps[0])
+}
+
+-- x/tool/tool_test.go --
+package tool
+
+import (
+	"testing"
+)
+
+func TestTool(t *testing.T) {
+	t.Log("Executing TestTool")
+	Tool()
+}
+
+-- x/tool/tool.go --
+package tool
+
+import (
+	"log"
+
+	"github.com/flowdev/spaghetti-analyzer/deps/testdata/half-pkgs-proj/x/tool/subtool"
+)
+
+// Tool is logging its execution.
+func Tool() {
+	log.Printf("INFO - tool.Tool")
+	subtool.Subtool()
+}
+
+-- x/tool/subtool/subtool.go --
+package subtool
+
+import "log"
+
+// Subtool is logging its execution.
+func Subtool() {
+	log.Printf("INFO - subtool.Subtool")
+}
+
+-- x/tool2/tool2_test.go --
+package tool2_test
+
+import (
+	"testing"
+
+	"github.com/flowdev/spaghetti-analyzer/deps/testdata/half-pkgs-proj/x/tool2"
+)
+
+func TestTool(t *testing.T) {
+	t.Log("Executing TestTool")
+	tool2.Tool2()
+}
+
+-- x/tool2/tool2.go --
+package tool2
+
+import (
+	"log"
+)
+
+// Tool2 is logging its execution.
+func Tool2() {
+	log.Printf("INFO - tool.Tool")
+}
+
+-- main.go --
+package main
+
+import (
+	"log"
+	"os"
+
+	"github.com/flowdev/spaghetti-analyzer/deps/testdata/half-pkgs-proj/db/store"
+	"github.com/flowdev/spaghetti-analyzer/deps/testdata/half-pkgs-proj/domain1"
+	"github.com/flowdev/spaghetti-analyzer/deps/testdata/half-pkgs-proj/domain2"
+)
+
+func main() {
+	doIt(os.Args[1:])
+}
+
+func doIt(args []string) {
+	log.Printf("INFO - this is the main package, args: %q", args)
+	s := &store.Store{}
+	domain1.HandleDomain1Route1(s)
+	domain1.HandleDomain1Route2(s)
+
+	domain2.HandleDomain2Route1(s)
+	domain2.HandleDomain2Route2(s)
+}
+
+-- db/model/model.go --
+package model
+
+type Product struct {
+	Name  string
+	Price float64
+}
+
+type ShoppingCart struct {
+	Content  []Product
+	Discount float64
+}
+
+-- db/store/store.go --
+package store
+
+import (
+	"github.com/flowdev/spaghetti-analyzer/deps/testdata/half-pkgs-proj/db/model"
+	"github.com/flowdev/spaghetti-analyzer/deps/testdata/half-pkgs-proj/db/store/substore"
+	"github.com/flowdev/spaghetti-analyzer/deps/testdata/half-pkgs-proj/x/tool"
+	"github.com/flowdev/spaghetti-analyzer/deps/testdata/half-pkgs-proj/x/tool2"
+)
+
+type Store struct {
+	// no real DB so no real fields either
+}
+
+func (s *Store) GetAllProducts() []model.Product {
+	tool.Tool()
+	return []model.Product{
+		{Name: "prod1", Price: 12.34},
+		{Name: "prod2", Price: 56.78},
+	}
+}
+
+func (s *Store) SaveProduct(prod model.Product) error {
+	tool2.Tool2()
+	return nil
+}
+
+func (s *Store) GetShoppingCart() model.ShoppingCart {
+	substore.GetTechnicalThing()
+	return model.ShoppingCart{
+		Content: []model.Product{
+			{Name: "prod1", Price: 12.34},
+			{Name: "prod2", Price: 56.78},
+		},
+		Discount: 0.9,
+	}
+}
+
+-- db/store/substore/substore.go --
+package substore
+
+func GetTechnicalThing() string {
+	return "technical thing"
+}
+
+-- domain1/domain1.go --
+package domain1
+
+import (
+	"github.com/flowdev/spaghetti-analyzer/deps/testdata/half-pkgs-proj/db/store"
+	"github.com/flowdev/spaghetti-analyzer/deps/testdata/half-pkgs-proj/x/tool"
+)
+
+func HandleDomain1Route1(s *store.Store) {
+	tool.Tool()
+	s.GetAllProducts()
+}
+
+func HandleDomain1Route2(s *store.Store) {
+	s.GetShoppingCart()
+}
+
+-- go.mod --
+module github.com/flowdev/spaghetti-analyzer/deps/testdata/half-pkgs-proj
+
+go 1.14

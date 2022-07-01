@@ -1,0 +1,87 @@
+# call fill with configuration
+fill '{}'
+cmp deps.actual deps.expected
+
+-- deps.expected --
+/ [G] imports: x/tool [S]
+/ [G] imports: x/tool2 [S]
+x/tool2 [S] imports: x/tool [S]
+
+-- x/tool/tool_test.go --
+package tool_test
+
+import (
+	"testing"
+
+	"github.com/flowdev/spaghetti-analyzer/deps/testdata/only-tools/x/tool"
+)
+
+func TestTool(t *testing.T) {
+	t.Log("Executing TestTool")
+	tool.Tool()
+}
+
+-- x/tool/tool.go --
+package tool
+
+import "log"
+
+// Tool is logging its execution.
+func Tool() {
+	log.Printf("INFO - tool.Tool")
+}
+
+-- x/tool2/tool2_test.go --
+package tool2_test
+
+import (
+	"testing"
+
+	"github.com/flowdev/spaghetti-analyzer/deps/testdata/only-tools/x/tool2"
+)
+
+func TestTool(t *testing.T) {
+	t.Log("Executing TestTool")
+	tool2.Tool2()
+}
+
+-- x/tool2/tool2.go --
+package tool2
+
+import (
+	"log"
+
+	"github.com/flowdev/spaghetti-analyzer/deps/testdata/only-tools/x/tool"
+)
+
+// Tool2 is logging its execution.
+func Tool2() {
+	log.Printf("INFO - tool.Tool")
+	tool.Tool() // evil dependency!
+}
+
+-- main.go --
+package main
+
+import (
+	"log"
+	"os"
+
+	"github.com/flowdev/spaghetti-analyzer/deps/testdata/only-tools/x/tool"
+	"github.com/flowdev/spaghetti-analyzer/deps/testdata/only-tools/x/tool2"
+)
+
+func main() {
+	doIt(os.Args[1:])
+}
+
+func doIt(args []string) {
+	log.Printf("INFO - this is the main package, args: %q", args)
+	tool.Tool()
+	tool2.Tool2()
+}
+
+-- go.mod --
+module github.com/flowdev/spaghetti-analyzer/deps/testdata/only-tools
+
+go 1.14
