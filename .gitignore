@@ -17,6 +17,3 @@ spaghetti-cutter.windows
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
-
-# temporary test files
-testdata/*/.spaghetti-cutter.hjson
