@@ -1,76 +1,30 @@
 package main
 
 import (
-	"io/ioutil"
-	"path/filepath"
+	"strconv"
 	"testing"
 
-	"github.com/flowdev/spaghetti-cutter/config"
+	"github.com/rogpeppe/go-internal/testscript"
 )
 
-func TestCut(t *testing.T) {
-	specs := []struct {
-		name               string
-		givenRoot          string
-		givenConfig        string
-		expectedReturnCode int
-	}{
-		{
-			name:               "no-config-good-proj",
-			givenRoot:          "good-proj",
-			givenConfig:        `{}`,
-			expectedReturnCode: 0,
-		}, {
-			name:      "strict-config-good-proj",
-			givenRoot: "good-proj",
-			givenConfig: `{
-				"tool": ["pkg/x/*"], "db": ["pkg/db/*"],
-				"allowAdditionally": {"pkg/domain4": ["pkg/domain3"]},
-				"size": 16
-			}`,
-			expectedReturnCode: 0,
-		}, {
-			name:      "lenient-config-good-proj",
-			givenRoot: "good-proj",
-			givenConfig: `{
-				"tool": ["pkg/x/*"], "db": ["pkg/db/*"],
-				"allowAdditionally": {"pkg/domain4": ["pkg/domain3"]},
-				"size": 1024
-			}`,
-			expectedReturnCode: 0,
-		}, {
-			name:               "no-config-bad-proj",
-			givenRoot:          "bad-proj",
-			givenConfig:        `{}`,
-			expectedReturnCode: 6,
+func TestAnalyze(t *testing.T) {
+	testscript.Run(t, testscript.Params{
+		Dir: "testdata",
+		Cmds: map[string]func(*testscript.TestScript, bool, []string){
+			"analyze": func(ts *testscript.TestScript, _ bool, args []string) {
+				expectedReturnCode, err := strconv.Atoi(args[0])
+				if err != nil {
+					ts.Fatalf("fatal return code error (%q): %v", args[0], err)
+				}
+
+				args = args[1:]
+				actualReturnCode := analyze(args)
+
+				if actualReturnCode != expectedReturnCode {
+					ts.Fatalf("Expected return code %d but got: %d", expectedReturnCode, actualReturnCode)
+				}
+			},
 		},
-	}
-
-	for _, spec := range specs {
-		t.Run(spec.name, func(t *testing.T) {
-			root := mustAbs(filepath.Join("testdata", spec.givenRoot))
-			mustWriteFile(filepath.Join(root, config.File), []byte(spec.givenConfig))
-			args := []string{"--root", root}
-			actualReturnCode := analyze(args)
-
-			if actualReturnCode != spec.expectedReturnCode {
-				t.Errorf("Expected return code %d but got: %d", spec.expectedReturnCode, actualReturnCode)
-			}
-		})
-	}
-}
-
-func mustAbs(path string) string {
-	absPath, err := filepath.Abs(path)
-	if err != nil {
-		panic(err.Error())
-	}
-	return absPath
-}
-
-func mustWriteFile(filename string, data []byte) {
-	err := ioutil.WriteFile(filename, data, 0644)
-	if err != nil {
-		panic(err.Error())
-	}
+		TestWork: false,
+	})
 }

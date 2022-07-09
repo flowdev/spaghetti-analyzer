@@ -1,0 +1,25 @@
+# analyze the project and return an exit code
+analyze 6 --root $WORK
+! exists package_dependencies.md
+! exists package_statistics.md
+! exists dirtree.txt
+
+
+-- .spaghetti-cutter.hjson --
+{}
+
+-- main.go --
+package main
+
+import (
+	"log"
+	"os"
+)
+
+func main() {
+	log.Printf("INFO - this is the main package, args: %q", os.Args[1:])
+
+-- go.mod --
+module github.com/flowdev/spaghetti-analyzer/testdata/bad-proj
+
+go 1.14

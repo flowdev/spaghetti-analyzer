@@ -1,0 +1,402 @@
+# analyze the project and return an exit code
+analyze 0 --root $WORK -d '' -s -t
+cmp dirtree.txt dirtree.expected
+cmp package_statistics.md package_statistics.expected 
+! exists package_dependencies.md
+cmp cmd/exe1/package_dependencies.md cmd/exe1/package_dependencies.expected 
+cmp cmd/exe2/package_dependencies.md cmd/exe2/package_dependencies.expected 
+
+
+-- cmd/exe1/package_dependencies.md --
+-- cmd/exe1/package_dependencies.expected --
+-- cmd/exe2/package_dependencies.md --
+-- cmd/exe2/package_dependencies.expected --
+-- dirtree.expected --
+good-proj -	
+├── cmd -	
+│   ├── exe1 -	Package exe1 ...
+│   └── exe2 -	Package exe2 ...
+└── pkg -	
+    ├── db -	
+    │   ├── model -	Package model ...
+    │   └── store -	Package store ...
+    ├── domain1 -	Package domain1 ...
+    ├── domain2 -	Package domain2 ...
+    ├── domain3 -	Package domain3 ...
+    ├── domain4 -	Package domain4 ...
+    └── x -	
+        ├── tool -	Package tool ...
+        └── tool2 -	Package tool2 ...
+-- package_statistics.expected --
+# Package Statistics
+
+| package | type | direct deps | all deps | users | max score | min score |
+| :- | :-: | -: | -: | -: | -: | -: |
+| [cmd/exe1](#package-cmdexe1) | [ \[G\] ](#legend) | [3](#direct-dependencies-imports-of-package-cmdexe1) | [6](#all-including-transitive-dependencies-imports-of-package-cmdexe1) | 0 | 0 | 0 |
+| [cmd/exe2](#package-cmdexe2) | [ \[G\] ](#legend) | [3](#direct-dependencies-imports-of-package-cmdexe2) | [6](#all-including-transitive-dependencies-imports-of-package-cmdexe2) | 0 | 0 | 0 |
+| [pkg/db/store](#package-pkgdbstore) | [ \[D\] ](#legend) | [3](#direct-dependencies-imports-of-package-pkgdbstore) | [3](#all-including-transitive-dependencies-imports-of-package-pkgdbstore) | [6](#packages-using-importing-package-pkgdbstore) | [9](#packages-shielded-from-users-of-package-pkgdbstore) | [1](#packages-shielded-from-all-users-of-package-pkgdbstore) |
+| [pkg/domain1](#package-pkgdomain1) | [ \[S\] ](#legend) | [2](#direct-dependencies-imports-of-package-pkgdomain1) | [4](#all-including-transitive-dependencies-imports-of-package-pkgdomain1) | [1](#packages-using-importing-package-pkgdomain1) | 0 | 0 |
+| [pkg/domain2](#package-pkgdomain2) | [ \[S\] ](#legend) | [2](#direct-dependencies-imports-of-package-pkgdomain2) | [4](#all-including-transitive-dependencies-imports-of-package-pkgdomain2) | [1](#packages-using-importing-package-pkgdomain2) | 0 | 0 |
+| [pkg/domain3](#package-pkgdomain3) | [ \[S\] ](#legend) | [2](#direct-dependencies-imports-of-package-pkgdomain3) | [4](#all-including-transitive-dependencies-imports-of-package-pkgdomain3) | [2](#packages-using-importing-package-pkgdomain3) | 0 | 0 |
+| [pkg/domain4](#package-pkgdomain4) | [ \[S\] ](#legend) | [3](#direct-dependencies-imports-of-package-pkgdomain4) | [5](#all-including-transitive-dependencies-imports-of-package-pkgdomain4) | [1](#packages-using-importing-package-pkgdomain4) | 0 | 0 |
+
+### Legend
+
+* package - name of the internal package without the part common to all packages.
+* type - type of the package:
+  * [G] - God package (can use all packages)
+  * [D] - Database package (can only use tool and other database packages)
+  * [T] - Tool package (foundational, no dependencies)
+  * [S] - Standard package (can only use tool and database packages)
+* direct deps - number of internal packages directly imported by this one.
+* all deps - number of transitive internal packages imported by this package.
+* users - number of internal packages that import this one.
+* max score - sum of the numbers of packages hidden from user packages.
+* min score - number of packages hidden from all user packages combined.
+
+
+### Package cmd/exe1
+
+
+#### Direct Dependencies (Imports) Of Package cmd/exe1
+[pkg/db/store](#package-pkgdbstore), [pkg/domain1](#package-pkgdomain1), [pkg/domain2](#package-pkgdomain2)
+
+#### All (Including Transitive) Dependencies (Imports) Of Package cmd/exe1
+`pkg/db/model`, [pkg/db/store](#package-pkgdbstore), [pkg/domain1](#package-pkgdomain1), [pkg/domain2](#package-pkgdomain2), `pkg/x/tool`, `pkg/x/tool2`
+
+### Package cmd/exe2
+
+
+#### Direct Dependencies (Imports) Of Package cmd/exe2
+[pkg/db/store](#package-pkgdbstore), [pkg/domain3](#package-pkgdomain3), [pkg/domain4](#package-pkgdomain4)
+
+#### All (Including Transitive) Dependencies (Imports) Of Package cmd/exe2
+`pkg/db/model`, [pkg/db/store](#package-pkgdbstore), [pkg/domain3](#package-pkgdomain3), [pkg/domain4](#package-pkgdomain4), `pkg/x/tool`, `pkg/x/tool2`
+
+### Package pkg/db/store
+
+
+#### Direct Dependencies (Imports) Of Package pkg/db/store
+`pkg/db/model`, `pkg/x/tool`, `pkg/x/tool2`
+
+#### All (Including Transitive) Dependencies (Imports) Of Package pkg/db/store
+`pkg/db/model`, `pkg/x/tool`, `pkg/x/tool2`
+
+#### Packages Using (Importing) Package pkg/db/store
+[cmd/exe1](#package-cmdexe1), [cmd/exe2](#package-cmdexe2), [pkg/domain1](#package-pkgdomain1), [pkg/domain2](#package-pkgdomain2), [pkg/domain3](#package-pkgdomain3), [pkg/domain4](#package-pkgdomain4)
+
+#### Packages Shielded From Users Of Package pkg/db/store
+* [cmd/exe1](#package-cmdexe1): `pkg/db/model`
+* [cmd/exe2](#package-cmdexe2): `pkg/db/model`
+* [pkg/domain1](#package-pkgdomain1): `pkg/db/model`, `pkg/x/tool2`
+* [pkg/domain2](#package-pkgdomain2): `pkg/db/model`, `pkg/x/tool`
+* [pkg/domain3](#package-pkgdomain3): `pkg/db/model`, `pkg/x/tool2`
+* [pkg/domain4](#package-pkgdomain4): `pkg/db/model`
+
+
+#### Packages Shielded From All Users Of Package pkg/db/store
+`pkg/db/model`
+
+### Package pkg/domain1
+
+
+#### Direct Dependencies (Imports) Of Package pkg/domain1
+[pkg/db/store](#package-pkgdbstore), `pkg/x/tool`
+
+#### All (Including Transitive) Dependencies (Imports) Of Package pkg/domain1
+`pkg/db/model`, [pkg/db/store](#package-pkgdbstore), `pkg/x/tool`, `pkg/x/tool2`
+
+#### Packages Using (Importing) Package pkg/domain1
+[cmd/exe1](#package-cmdexe1)
+
+### Package pkg/domain2
+
+
+#### Direct Dependencies (Imports) Of Package pkg/domain2
+[pkg/db/store](#package-pkgdbstore), `pkg/x/tool2`
+
+#### All (Including Transitive) Dependencies (Imports) Of Package pkg/domain2
+`pkg/db/model`, [pkg/db/store](#package-pkgdbstore), `pkg/x/tool`, `pkg/x/tool2`
+
+#### Packages Using (Importing) Package pkg/domain2
+[cmd/exe1](#package-cmdexe1)
+
+### Package pkg/domain3
+
+
+#### Direct Dependencies (Imports) Of Package pkg/domain3
+[pkg/db/store](#package-pkgdbstore), `pkg/x/tool`
+
+#### All (Including Transitive) Dependencies (Imports) Of Package pkg/domain3
+`pkg/db/model`, [pkg/db/store](#package-pkgdbstore), `pkg/x/tool`, `pkg/x/tool2`
+
+#### Packages Using (Importing) Package pkg/domain3
+[cmd/exe2](#package-cmdexe2), [pkg/domain4](#package-pkgdomain4)
+
+### Package pkg/domain4
+
+
+#### Direct Dependencies (Imports) Of Package pkg/domain4
+[pkg/db/store](#package-pkgdbstore), [pkg/domain3](#package-pkgdomain3), `pkg/x/tool2`
+
+#### All (Including Transitive) Dependencies (Imports) Of Package pkg/domain4
+`pkg/db/model`, [pkg/db/store](#package-pkgdbstore), [pkg/domain3](#package-pkgdomain3), `pkg/x/tool`, `pkg/x/tool2`
+
+#### Packages Using (Importing) Package pkg/domain4
+[cmd/exe2](#package-cmdexe2)
+-- .spaghetti-cutter.hjson --
+{
+	"tool": ["pkg/x/*"], "db": ["pkg/db/*"],
+	"allowAdditionally": {"pkg/domain4": ["pkg/domain3"]},
+	"size": 1024
+}
+
+-- pkg/domain2/domain2.go --
+package domain2
+
+import (
+	"github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/db/store"
+	"github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/x/tool2"
+)
+
+func HandleDomain2Route1(s *store.Store) {
+	tool2.Tool2()
+	s.GetAllProducts()
+}
+
+func HandleDomain2Route2(s *store.Store) {
+	ps := s.GetAllProducts()
+	s.SaveProduct(ps[0])
+}
+
+-- pkg/x/tool/tool_test.go --
+package tool
+
+import (
+	"testing"
+)
+
+func TestTool(t *testing.T) {
+	t.Log("Executing TestTool")
+	Tool()
+}
+
+-- pkg/x/tool/tool.go --
+package tool
+
+import "log"
+
+// Tool is logging its execution.
+func Tool() {
+	log.Printf("INFO - tool.Tool")
+}
+
+-- pkg/x/tool2/tool2_test.go --
+package tool2_test
+
+import (
+	"testing"
+
+	"github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/x/tool2"
+)
+
+func TestTool(t *testing.T) {
+	t.Log("Executing TestTool")
+	tool2.Tool2()
+}
+
+-- pkg/x/tool2/tool2.go --
+package tool2
+
+import (
+	"log"
+)
+
+// Tool2 is logging its execution.
+func Tool2() {
+	log.Printf("INFO - tool.Tool")
+}
+
+-- pkg/db/model/model.go --
+package model
+
+type Product struct {
+	Name  string
+	Price float64
+}
+
+type ShoppingCart struct {
+	Content  []Product
+	Discount float64
+}
+
+-- pkg/db/store/store.go --
+package store
+
+import (
+	"github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/db/model"
+	"github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/x/tool"
+	"github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/x/tool2"
+)
+
+type Store struct {
+	// no real DB so no real fields either
+}
+
+func (s *Store) GetAllProducts() []model.Product {
+	tool.Tool()
+	return []model.Product{
+		{Name: "prod1", Price: 12.34},
+		{Name: "prod2", Price: 56.78},
+	}
+}
+
+func (s *Store) SaveProduct(prod model.Product) error {
+	tool2.Tool2()
+	return nil
+}
+
+func (s *Store) GetShoppingCart() model.ShoppingCart {
+	return model.ShoppingCart{
+		Content: []model.Product{
+			{Name: "prod1", Price: 12.34},
+			{Name: "prod2", Price: 56.78},
+		},
+		Discount: 0.9,
+	}
+}
+
+-- pkg/domain1/domain1.go --
+package domain1
+
+import (
+	"github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/db/store"
+	"github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/x/tool"
+)
+
+func HandleDomain1Route1(s *store.Store) {
+	tool.Tool()
+	s.GetAllProducts()
+}
+
+func HandleDomain1Route2(s *store.Store) {
+	s.GetShoppingCart()
+}
+
+-- pkg/domain3/domain3.go --
+package domain3
+
+import (
+	"github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/db/store"
+	"github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/x/tool"
+)
+
+func HandleDomain3Route1(s *store.Store) {
+	tool.Tool()
+	s.GetAllProducts()
+}
+
+func HandleDomain3Route2(s *store.Store) {
+	s.GetShoppingCart()
+}
+
+-- pkg/domain4/domain4.go --
+package domain4
+
+import (
+	"fmt"
+
+	"github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/db/store"
+	"github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/domain3"
+	"github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/x/tool2"
+)
+
+func HandleDomain4Route1(s *store.Store) {
+	tool2.Tool2()
+	s.GetAllProducts()
+}
+
+func HandleDomain4Route2(s *store.Store) {
+	domain3.HandleDomain3Route1(s)
+	foo(1, 2, 3, 4, "s1", "s2", "s3")
+}
+
+func foo(i1, i2, i3, i4 int, s1, s2, s3 string) {
+	if i1 > 0 {
+		fmt.Println("I sum:", i1+i2+i3+i4)
+	} else {
+		fmt.Println("S sum:", s1+s2+s3)
+	}
+
+	for i := 0; i < i2; i++ {
+		go bar(i, s3)
+	}
+}
+
+func bar(i int, s string) {
+	switch i % 2 {
+	case 0:
+		fmt.Println("You are even:", i, s)
+	case 1:
+		fmt.Println("That is odd:", i)
+	default:
+		fmt.Println("What's this???", i)
+	}
+}
+
+-- cmd/exe1/main.go --
+package main
+
+import (
+	"log"
+	"os"
+
+	"github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/db/store"
+	"github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/domain1"
+	"github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/domain2"
+)
+
+func main() {
+	doIt(os.Args[1:])
+}
+
+func doIt(args []string) {
+	log.Printf("INFO - this is the main package, args: %q", args)
+	s := &store.Store{}
+	domain1.HandleDomain1Route1(s)
+	domain1.HandleDomain1Route2(s)
+
+	domain2.HandleDomain2Route1(s)
+	domain2.HandleDomain2Route2(s)
+}
+
+-- cmd/exe2/main.go --
+package main
+
+import (
+	"log"
+	"os"
+
+	"github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/db/store"
+	"github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/domain3"
+	"github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/domain4"
+)
+
+func main() {
+	doIt(os.Args[1:])
+}
+
+func doIt(args []string) {
+	log.Printf("INFO - this is the main package, args: %q", args)
+	s := &store.Store{}
+	domain3.HandleDomain3Route1(s)
+	domain3.HandleDomain3Route2(s)
+
+	domain4.HandleDomain4Route1(s)
+	domain4.HandleDomain4Route2(s)
+}
+
+-- go.mod --
+module github.com/flowdev/spaghetti-analyzer/testdata/good-proj
+
+go 1.14
