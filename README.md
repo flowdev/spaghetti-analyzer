@@ -1,6 +1,6 @@
 ![spaghetti analyzer](./spaghetti-analyzer.jpg "spaghetti analyzer")
 
-# spaghetti-analyzer - Win The Fight Against Spaghetti Code
+# spaghetti-analyzer - Analyze And Document Your Package Structure
 
 ![CircleCI](https://img.shields.io/circleci/build/github/flowdev/spaghetti-analyzer/master)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/91d98c13ac5390ba6116/test_coverage)](https://codeclimate.com/github/flowdev/spaghetti-analyzer/test_coverage)
@@ -12,11 +12,8 @@
 
 ## Overview
 
-`spaghetti-analyzer` is a command line tool for CI/CD pipelines (and dev machines)
-that helps to prevent Go spaghetti code (a.k.a. big ball of mud).
-
-Thankfully in the Go world circular dependencies between packages are already prevented by the compiler.
-So this tool has to care only about additional undesired dependencies.
+`spaghetti-analyzer` is a command line tool for devevelopers (and CI/CD pipelines)
+that helps to analyze and document the Go package structure of a project.
 
 I gave a talk that includes the motivation for this tool and some usage examples:
 [![Microservices - The End of Software Design](https://img.youtube.com/vi/ev0dD12bxmg/0.jpg)](https://www.youtube.com/watch?v=ev0dD12bxmg "Microservices - The End of Software Design")
@@ -24,19 +21,6 @@ I gave a talk that includes the motivation for this tool and some usage examples
 Additionally this tool documents the structure of a project in the
 [configuration](./.spaghetti-analyzer.hjson) and the
 [package dependencies](./package_dependencies.md).
-
-<!-- DOES NOT WORK according to the specification at:
-	https://github.github.com/gfm/#html-blocks
-
-<style
-  type="text/css">
-h1 {color:red;}
-
-p {color:blue;}
-</style>
-
-okay
--->
 
 <!-- spaghetti-analyzer: start 
 TestMarkDown table for generated documentation:

@@ -1,3 +1,4 @@
+// Package dirs is a tool for directory handling.
 package dirs
 
 import (

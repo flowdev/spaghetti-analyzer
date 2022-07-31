@@ -1,5 +1,4 @@
-// Package tree contains the logic for creating a directory tree with information about the Go packages in it.
-// The format is bla, bla, bla...
+// Package tree creates a directory tree with information about Go packages.
 package tree
 
 import (

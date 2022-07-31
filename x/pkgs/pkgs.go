@@ -1,3 +1,4 @@
+// Package pkgs is a tools for simpler handling of parsed Go packages.
 package pkgs
 
 import (

@@ -1,3 +1,4 @@
+// Package stat creates statistics for analyzing the Go package structure.
 package stat
 
 import (

@@ -1,3 +1,4 @@
+// Package doc documents of the Go package structure as a dependency table.
 package doc
 
 import (

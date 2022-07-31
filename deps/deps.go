@@ -1,3 +1,4 @@
+// Package deps analyzes and reports the dependencies between Go packages.
 package deps
 
 import (

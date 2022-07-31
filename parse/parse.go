@@ -1,3 +1,4 @@
+// Package parse does the actual parsing of Go code.
 package parse
 
 import (

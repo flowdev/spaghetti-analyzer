@@ -1,3 +1,4 @@
+// Package analdata contains the central data types of the spaghetti-analyzer.
 package analdata
 
 import (

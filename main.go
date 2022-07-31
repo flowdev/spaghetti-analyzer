@@ -1,3 +1,4 @@
+// Package spaghetti-analyzer is the main and root package of the project.
 package main
 
 import (
