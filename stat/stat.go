@@ -23,7 +23,7 @@ const (
 	Header = `# Package Statistics
 
 | package | type | direct deps | all deps | users | max score | min score |
-| :- | :-: | -: | -: | -: | -: | -: |
+|:-|:-:|-:|-:|-:|-:|-:|
 `
 	titleImps     = `Direct Dependencies (Imports) Of `
 	titleAllImps  = `All (Including Transitive) Dependencies (Imports) Of `

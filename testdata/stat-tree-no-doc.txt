@@ -31,7 +31,7 @@ good-proj -
 # Package Statistics
 
 | package | type | direct deps | all deps | users | max score | min score |
-| :- | :-: | -: | -: | -: | -: | -: |
+|:-|:-:|-:|-:|-:|-:|-:|
 | [cmd/exe1](#package-cmdexe1) | [ \[G\] ](#legend) | [3](#direct-dependencies-imports-of-package-cmdexe1) | [6](#all-including-transitive-dependencies-imports-of-package-cmdexe1) | 0 | 0 | 0 |
 | [cmd/exe2](#package-cmdexe2) | [ \[G\] ](#legend) | [3](#direct-dependencies-imports-of-package-cmdexe2) | [6](#all-including-transitive-dependencies-imports-of-package-cmdexe2) | 0 | 0 | 0 |
 | [pkg/db/store](#package-pkgdbstore) | [ \[D\] ](#legend) | [3](#direct-dependencies-imports-of-package-pkgdbstore) | [3](#all-including-transitive-dependencies-imports-of-package-pkgdbstore) | [6](#packages-using-importing-package-pkgdbstore) | [9](#packages-shielded-from-users-of-package-pkgdbstore) | [1](#packages-shielded-from-all-users-of-package-pkgdbstore) |

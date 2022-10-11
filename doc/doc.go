@@ -153,10 +153,10 @@ func generateTable(
 	}
 	sb.WriteString("|\n")
 
-	// separator line: | :- | :-: | :-: | ... | :-: |
-	sb.WriteString("| :- ")
+	// separator line: |:---|:--:|:-:| ... |:---:|
+	sb.WriteString("|:-")
 	for range allCols {
-		sb.WriteString("| :- ")
+		sb.WriteString("|:-")
 	}
 	sb.WriteString("|\n")
 

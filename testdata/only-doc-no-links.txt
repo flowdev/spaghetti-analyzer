@@ -11,7 +11,7 @@ cmp cmd/exe2/package_dependencies.md cmd/exe2/package_dependencies.expected
 # Dependency Table For: github.com/flowdev/spaghetti-analyzer/testdata/good-proj/cmd/exe1
 
 | | p k g / d b / m o d e l - D | p k g / d b / s t o r e - D | p k g / d o m a i n 1 - S | p k g / d o m a i n 2 - S | p k g / x / t o o l - T | p k g / x / t o o l 2 - T |
-| :- | :- | :- | :- | :- | :- | :- |
+|:-|:-|:-|:-|:-|:-|:-|
 | **cmd/exe1** | | **D** | **S** | **S** | | |
 | `pkg/db/store` | `D` | | | | `T` | `T` |
 | pkg/domain1 | | D | | | T | |
@@ -42,7 +42,7 @@ cmp cmd/exe2/package_dependencies.md cmd/exe2/package_dependencies.expected
 # Dependency Table For: github.com/flowdev/spaghetti-analyzer/testdata/good-proj/cmd/exe2
 
 | | p k g / d b / m o d e l - D | p k g / d b / s t o r e - D | p k g / d o m a i n 3 - S | p k g / d o m a i n 4 - S | p k g / x / t o o l - T | p k g / x / t o o l 2 - T |
-| :- | :- | :- | :- | :- | :- | :- |
+|:-|:-|:-|:-|:-|:-|:-|
 | **cmd/exe2** | | **D** | **S** | **S** | | |
 | `pkg/db/store` | `D` | | | | `T` | `T` |
 | pkg/domain3 | | D | | | T | |

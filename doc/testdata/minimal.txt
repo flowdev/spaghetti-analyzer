@@ -7,7 +7,7 @@ cmp f/i/package_dependencies.md f/i/package_dependencies.expected
 # Dependency Table For: github.com/flowdev/tst/f/i
 
 | | e s c h e r - T |
-| :- | :- |
+|:-|:-|
 | f/i | T |
 
 ### Legend
