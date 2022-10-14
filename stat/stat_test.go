@@ -97,7 +97,9 @@ func TestGenerateTable(t *testing.T) {
 				},
 			},
 			expectedStat: stat.Header +
-				`| [a](#package-a) | [ \[G\] ](#legend) | [1](#direct-dependencies-imports-of-package-a) | [1](#all-including-transitive-dependencies-imports-of-package-a) | 0 | 0 | 0 |
+				`| package         |        type        |                                    direct deps |                                                         all deps | users | max score | min score |
+|:----------------|:------------------:|-----------------------------------------------:|-----------------------------------------------------------------:|------:|----------:|----------:|
+| [a](#package-a) | [ \[G\] ](#legend) | [1](#direct-dependencies-imports-of-package-a) | [1](#all-including-transitive-dependencies-imports-of-package-a) |     0 |         0 |         0 |
 ` + stat.Legend + `
 
 ### Package a
@@ -113,14 +115,16 @@ func TestGenerateTable(t *testing.T) {
 			name:        "complex",
 			givenDepMap: bigDepMap,
 			expectedStat: stat.Header +
-				`| [a](#package-a) | [ \[G\] ](#legend) | [5](#direct-dependencies-imports-of-package-a) | [11](#all-including-transitive-dependencies-imports-of-package-a) | 0 | 0 | 0 |
-| [f](#package-f) | [ \[S\] ](#legend) | [3](#direct-dependencies-imports-of-package-f) | [8](#all-including-transitive-dependencies-imports-of-package-f) | [1](#packages-using-importing-package-f) | [5](#packages-shielded-from-users-of-package-f) | [5](#packages-shielded-from-all-users-of-package-f) |
+				`| package            |        type        |                                     direct deps |                                                          all deps |                                     users |                                        max score |                                            min score |
+|:-------------------|:------------------:|------------------------------------------------:|------------------------------------------------------------------:|------------------------------------------:|-------------------------------------------------:|-----------------------------------------------------:|
+| [a](#package-a)    | [ \[G\] ](#legend) |  [5](#direct-dependencies-imports-of-package-a) | [11](#all-including-transitive-dependencies-imports-of-package-a) |                                         0 |                                                0 |                                                    0 |
+| [f](#package-f)    | [ \[S\] ](#legend) |  [3](#direct-dependencies-imports-of-package-f) |  [8](#all-including-transitive-dependencies-imports-of-package-f) |  [1](#packages-using-importing-package-f) |  [5](#packages-shielded-from-users-of-package-f) |  [5](#packages-shielded-from-all-users-of-package-f) |
 | [f/g](#package-fg) | [ \[S\] ](#legend) | [3](#direct-dependencies-imports-of-package-fg) | [4](#all-including-transitive-dependencies-imports-of-package-fg) | [1](#packages-using-importing-package-fg) | [1](#packages-shielded-from-users-of-package-fg) | [1](#packages-shielded-from-all-users-of-package-fg) |
 | [f/h](#package-fh) | [ \[S\] ](#legend) | [2](#direct-dependencies-imports-of-package-fh) | [4](#all-including-transitive-dependencies-imports-of-package-fh) | [1](#packages-using-importing-package-fh) | [1](#packages-shielded-from-users-of-package-fh) | [1](#packages-shielded-from-all-users-of-package-fh) |
-| [f/i](#package-fi) | [ \[S\] ](#legend) | [1](#direct-dependencies-imports-of-package-fi) | [1](#all-including-transitive-dependencies-imports-of-package-fi) | [1](#packages-using-importing-package-fi) | 0 | 0 |
-| [m](#package-m) | [ \[S\] ](#legend) | [2](#direct-dependencies-imports-of-package-m) | [3](#all-including-transitive-dependencies-imports-of-package-m) | [1](#packages-using-importing-package-m) | 0 | 0 |
-| [x](#package-x) | [ \[D\] ](#legend) | [2](#direct-dependencies-imports-of-package-x) | [2](#all-including-transitive-dependencies-imports-of-package-x) | [4](#packages-using-importing-package-x) | [3](#packages-shielded-from-users-of-package-x) | 0 |
-| [z](#package-z) | [ \[D\] ](#legend) | [4](#direct-dependencies-imports-of-package-z) | [4](#all-including-transitive-dependencies-imports-of-package-z) | [1](#packages-using-importing-package-z) | 0 | 0 |
+| [f/i](#package-fi) | [ \[S\] ](#legend) | [1](#direct-dependencies-imports-of-package-fi) | [1](#all-including-transitive-dependencies-imports-of-package-fi) | [1](#packages-using-importing-package-fi) |                                                0 |                                                    0 |
+| [m](#package-m)    | [ \[S\] ](#legend) |  [2](#direct-dependencies-imports-of-package-m) |  [3](#all-including-transitive-dependencies-imports-of-package-m) |  [1](#packages-using-importing-package-m) |                                                0 |                                                    0 |
+| [x](#package-x)    | [ \[D\] ](#legend) |  [2](#direct-dependencies-imports-of-package-x) |  [2](#all-including-transitive-dependencies-imports-of-package-x) |  [4](#packages-using-importing-package-x) |  [3](#packages-shielded-from-users-of-package-x) |                                                    0 |
+| [z](#package-z)    | [ \[D\] ](#legend) |  [4](#direct-dependencies-imports-of-package-z) |  [4](#all-including-transitive-dependencies-imports-of-package-z) |  [1](#packages-using-importing-package-z) |                                                0 |                                                    0 |
 ` + stat.Legend + `
 
 ### Package a

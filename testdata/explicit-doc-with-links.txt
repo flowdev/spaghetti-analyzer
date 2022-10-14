@@ -15,10 +15,10 @@ cmp pkg/domain4/package_dependencies.md pkg/domain4/package_dependencies.expecte
 -- cmd/exe1/package_dependencies.expected --
 # Dependency Table For: github.com/flowdev/spaghetti-analyzer/testdata/good-proj/cmd/exe1
 
-| | p k g / d b / m o d e l - D | p k g / d b / s t o r e - D | [p k g / d o m a i n 1 - S](../../pkg/domain1/package_dependencies.md)  | [p k g / d o m a i n 2 - S](../../pkg/domain2/package_dependencies.md)  | p k g / x / t o o l - T | p k g / x / t o o l 2 - T |
-|:-|:-|:-|:-|:-|:-|:-|
-| **cmd/exe1** | | **D** | **S** | **S** | | |
-| `pkg/db/store` | `D` | | | | `T` | `T` |
+|                | p k g / d b / m o d e l - D | p k g / d b / s t o r e - D | [p k g / d o m a i n 1 - S](../../pkg/domain1/package_dependencies.md) | [p k g / d o m a i n 2 - S](../../pkg/domain2/package_dependencies.md) | p k g / x / t o o l - T | p k g / x / t o o l 2 - T |
+|:---------------|:---------------------------:|:---------------------------:|:----------------------------------------------------------------------:|:----------------------------------------------------------------------:|:-----------------------:|:-------------------------:|
+| **cmd/exe1**   |                             |            **D**            |                                 **S**                                  |                                 **S**                                  |                         |                           |
+| `pkg/db/store` |             `D`             |                             |                                                                        |                                                                        |           `T`           |            `T`            |
 
 ### Legend
 
@@ -44,10 +44,10 @@ cmp pkg/domain4/package_dependencies.md pkg/domain4/package_dependencies.expecte
 -- cmd/exe2/package_dependencies.expected --
 # Dependency Table For: github.com/flowdev/spaghetti-analyzer/testdata/good-proj/cmd/exe2
 
-| | p k g / d b / m o d e l - D | p k g / d b / s t o r e - D | [p k g / d o m a i n 3 - S](../../pkg/domain3/package_dependencies.md)  | [p k g / d o m a i n 4 - S](../../pkg/domain4/package_dependencies.md)  | p k g / x / t o o l - T | p k g / x / t o o l 2 - T |
-|:-|:-|:-|:-|:-|:-|:-|
-| **cmd/exe2** | | **D** | **S** | **S** | | |
-| `pkg/db/store` | `D` | | | | `T` | `T` |
+|                | p k g / d b / m o d e l - D | p k g / d b / s t o r e - D | [p k g / d o m a i n 3 - S](../../pkg/domain3/package_dependencies.md) | [p k g / d o m a i n 4 - S](../../pkg/domain4/package_dependencies.md) | p k g / x / t o o l - T | p k g / x / t o o l 2 - T |
+|:---------------|:---------------------------:|:---------------------------:|:----------------------------------------------------------------------:|:----------------------------------------------------------------------:|:-----------------------:|:-------------------------:|
+| **cmd/exe2**   |                             |            **D**            |                                 **S**                                  |                                 **S**                                  |                         |                           |
+| `pkg/db/store` |             `D`             |                             |                                                                        |                                                                        |           `T`           |            `T`            |
 
 ### Legend
 
@@ -73,10 +73,10 @@ cmp pkg/domain4/package_dependencies.md pkg/domain4/package_dependencies.expecte
 -- pkg/domain1/package_dependencies.expected --
 # Dependency Table For: github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/domain1
 
-| | p k g / d b / m o d e l - D | p k g / d b / s t o r e - D | p k g / x / t o o l - T | p k g / x / t o o l 2 - T |
-|:-|:-|:-|:-|:-|
-| `pkg/db/store` | `D` | | `T` | `T` |
-| pkg/domain1 | | D | T | |
+|                | p k g / d b / m o d e l - D | p k g / d b / s t o r e - D | p k g / x / t o o l - T | p k g / x / t o o l 2 - T |
+|:---------------|:---------------------------:|:---------------------------:|:-----------------------:|:-------------------------:|
+| `pkg/db/store` |             `D`             |                             |           `T`           |            `T`            |
+| pkg/domain1    |                             |              D              |            T            |                           |
 
 ### Legend
 
@@ -102,10 +102,10 @@ cmp pkg/domain4/package_dependencies.md pkg/domain4/package_dependencies.expecte
 -- pkg/domain2/package_dependencies.expected --
 # Dependency Table For: github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/domain2
 
-| | p k g / d b / m o d e l - D | p k g / d b / s t o r e - D | p k g / x / t o o l - T | p k g / x / t o o l 2 - T |
-|:-|:-|:-|:-|:-|
-| `pkg/db/store` | `D` | | `T` | `T` |
-| pkg/domain2 | | D | | T |
+|                | p k g / d b / m o d e l - D | p k g / d b / s t o r e - D | p k g / x / t o o l - T | p k g / x / t o o l 2 - T |
+|:---------------|:---------------------------:|:---------------------------:|:-----------------------:|:-------------------------:|
+| `pkg/db/store` |             `D`             |                             |           `T`           |            `T`            |
+| pkg/domain2    |                             |              D              |                         |             T             |
 
 ### Legend
 
@@ -131,10 +131,10 @@ cmp pkg/domain4/package_dependencies.md pkg/domain4/package_dependencies.expecte
 -- pkg/domain3/package_dependencies.expected --
 # Dependency Table For: github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/domain3
 
-| | p k g / d b / m o d e l - D | p k g / d b / s t o r e - D | p k g / x / t o o l - T | p k g / x / t o o l 2 - T |
-|:-|:-|:-|:-|:-|
-| `pkg/db/store` | `D` | | `T` | `T` |
-| pkg/domain3 | | D | T | |
+|                | p k g / d b / m o d e l - D | p k g / d b / s t o r e - D | p k g / x / t o o l - T | p k g / x / t o o l 2 - T |
+|:---------------|:---------------------------:|:---------------------------:|:-----------------------:|:-------------------------:|
+| `pkg/db/store` |             `D`             |                             |           `T`           |            `T`            |
+| pkg/domain3    |                             |              D              |            T            |                           |
 
 ### Legend
 
@@ -160,10 +160,10 @@ cmp pkg/domain4/package_dependencies.md pkg/domain4/package_dependencies.expecte
 -- pkg/domain4/package_dependencies.expected --
 # Dependency Table For: github.com/flowdev/spaghetti-analyzer/testdata/good-proj/pkg/domain4
 
-| | p k g / d b / m o d e l - D | p k g / d b / s t o r e - D | [p k g / d o m a i n 3 - S](../domain3/package_dependencies.md)  | p k g / x / t o o l - T | p k g / x / t o o l 2 - T |
-|:-|:-|:-|:-|:-|:-|
-| `pkg/db/store` | `D` | | | `T` | `T` |
-| pkg/domain4 | | D | S | | T |
+|                | p k g / d b / m o d e l - D | p k g / d b / s t o r e - D | [p k g / d o m a i n 3 - S](../domain3/package_dependencies.md) | p k g / x / t o o l - T | p k g / x / t o o l 2 - T |
+|:---------------|:---------------------------:|:---------------------------:|:---------------------------------------------------------------:|:-----------------------:|:-------------------------:|
+| `pkg/db/store` |             `D`             |                             |                                                                 |           `T`           |            `T`            |
+| pkg/domain4    |                             |              D              |                                S                                |                         |             T             |
 
 ### Legend
 

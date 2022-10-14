@@ -11,11 +11,11 @@ cmp a/package_dependencies.md a/package_dependencies.expected
 -- a/package_dependencies.expected --
 # Dependency Table For: github.com/flowdev/tst/a
 
-| | b / c / d - T | e p s i l o n - T | e s c h e r - T | [f - S](../f/package_dependencies.md)  | x - D | z - D |
-|:-|:-|:-|:-|:-|:-|:-|
-| **a** | **T** | **T** | **T** | **S** | | **D** |
-| `x` | `T` | | `T` | | | |
-| `z` | `T` | `T` | `T` | | `D` | |
+|       | b / c / d - T | e p s i l o n - T | e s c h e r - T | [f - S](../f/package_dependencies.md) | x - D | z - D |
+|:------|:-------------:|:-----------------:|:---------------:|:-------------------------------------:|:-----:|:-----:|
+| **a** |     **T**     |       **T**       |      **T**      |                 **S**                 |       | **D** |
+| `x`   |      `T`      |                   |       `T`       |                                       |       |       |
+| `z`   |      `T`      |        `T`        |       `T`       |                                       |  `D`  |       |
 
 ### Legend
 
@@ -42,13 +42,13 @@ cmp a/package_dependencies.md a/package_dependencies.expected
 -- f/package_dependencies.expected --
 # Dependency Table For: github.com/flowdev/tst/f
 
-| | b / c / d - T | e s c h e r - T | f / g - S | f / h - S | [f / i - S](i/package_dependencies.md)  | f / j - S | m - S | x - D |
-|:-|:-|:-|:-|:-|:-|:-|:-|:-|
-| f | | | S | S | S | | | |
-| f/g | | T | | | | S | | D |
-| f/h | | | | | | | S | D |
-| m | T | | | | | | | D |
-| `x` | `T` | `T` | | | | | | |
+|     | b / c / d - T | e s c h e r - T | f / g - S | f / h - S | [f / i - S](i/package_dependencies.md) | f / j - S | m - S | x - D |
+|:----|:-------------:|:---------------:|:---------:|:---------:|:--------------------------------------:|:---------:|:-----:|:-----:|
+| f   |               |                 |     S     |     S     |                   S                    |           |       |       |
+| f/g |               |        T        |           |           |                                        |     S     |       |   D   |
+| f/h |               |                 |           |           |                                        |           |   S   |   D   |
+| m   |       T       |                 |           |           |                                        |           |       |   D   |
+| `x` |      `T`      |       `T`       |           |           |                                        |           |       |       |
 
 ### Legend
 
@@ -75,9 +75,9 @@ cmp a/package_dependencies.md a/package_dependencies.expected
 -- f/i/package_dependencies.expected --
 # Dependency Table For: github.com/flowdev/tst/f/i
 
-| | e s c h e r - T |
-|:-|:-|
-| f/i | T |
+|     | e s c h e r - T |
+|:----|:---------------:|
+| f/i |        T        |
 
 ### Legend
 

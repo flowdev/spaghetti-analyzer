@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/flowdev/spaghetti-analyzer/analdata"
+	"github.com/flowdev/spaghetti-analyzer/x/table"
 	"github.com/flowdev/spaghetti-cutter/data"
 )
 
@@ -125,64 +126,67 @@ func generateTable(
 	sort.Strings(allCols)
 
 	sb := &strings.Builder{}
-	intro := Title + path.Join(rootPkg, pattern) + `
+	sb.WriteString(Title + path.Join(rootPkg, pattern) + "\n\n")
 
-| `
-	sb.WriteString(intro)
+	tableData := make([][]string, 0, len(allRows)+1)
+	headerRow := make([]string, 0, len(allCols)+1)
+	tableAlign := make([]table.Align, 0, len(allCols)+1)
 
 	// (column) header line: | | C o l 1 - G | C o l 2 | ... | C o l N - T |
+	headerRow = append(headerRow, "")
 	for _, col := range allCols {
-		sb.WriteString("| ")
+		sb2 := &strings.Builder{}
 		colIdx := data.DocMatchStringIndex(col, links)
 		if colIdx >= 0 && colIdx != idx {
-			sb.WriteRune('[')
+			sb2.WriteRune('[')
 		}
 		for _, r := range col {
-			sb.WriteRune(r)
-			sb.WriteRune(' ')
+			sb2.WriteRune(r)
+			sb2.WriteRune(' ')
 		}
-		sb.WriteString("- ")
+		sb2.WriteString("- ")
 		letter := data.TypeLetter(allColsMap[col])
-		sb.WriteRune(letter)
+		sb2.WriteRune(letter)
 		if colIdx >= 0 && colIdx != idx {
-			sb.WriteString("](")
-			sb.WriteString(RelPath(startPkg, filepath.ToSlash(docFiles[colIdx])))
-			sb.WriteString(") ")
+			sb2.WriteString("](")
+			sb2.WriteString(RelPath(startPkg, filepath.ToSlash(docFiles[colIdx])))
+			sb2.WriteString(")")
 		}
-		sb.WriteRune(' ')
+		headerRow = append(headerRow, sb2.String())
 	}
-	sb.WriteString("|\n")
+	tableData = append(tableData, headerRow)
 
 	// separator line: |:---|:--:|:-:| ... |:---:|
-	sb.WriteString("|:-")
+	tableAlign = append(tableAlign, table.AlignLeft)
 	for range allCols {
-		sb.WriteString("|:-")
+		tableAlign = append(tableAlign, table.AlignCenter)
 	}
-	sb.WriteString("|\n")
 
 	// normal rows: | **Row1** | **G** | | ... | **T** |
 	for _, row := range allRows {
+		dataRow := make([]string, 0, len(allCols)+1)
+		sb2 := &strings.Builder{}
 		pkgImps := depMap[row]
 
-		sb.WriteString("| ")
 		format := data.TypeFormat(pkgImps.PkgType)
-		sb.WriteString(format)
-		sb.WriteString(row)
-		sb.WriteString(format)
-		sb.WriteRune(' ')
+		sb2.WriteString(format)
+		sb2.WriteString(row)
+		sb2.WriteString(format)
+		dataRow = append(dataRow, sb2.String())
 
 		for _, col := range allCols {
-			sb.WriteString("| ")
+			sb2.Reset()
 			if impType, ok := pkgImps.Imports[col]; ok {
-				sb.WriteString(format)
-				sb.WriteRune(data.TypeLetter(impType))
-				sb.WriteString(format)
-				sb.WriteRune(' ')
+				sb2.WriteString(format)
+				sb2.WriteRune(data.TypeLetter(impType))
+				sb2.WriteString(format)
 			}
+			dataRow = append(dataRow, sb2.String())
 		}
-		sb.WriteString("|\n")
+		tableData = append(tableData, dataRow)
 	}
 
+	sb.WriteString(table.Generate(tableData, tableAlign))
 	sb.WriteString(Legend)
 	return sb.String()
 }

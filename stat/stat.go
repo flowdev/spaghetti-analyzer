@@ -2,7 +2,6 @@
 package stat
 
 import (
-	"fmt"
 	"log"
 	"regexp"
 	"sort"
@@ -10,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/flowdev/spaghetti-analyzer/analdata"
+	"github.com/flowdev/spaghetti-analyzer/x/table"
 	"github.com/flowdev/spaghetti-cutter/data"
 )
 
@@ -22,8 +22,6 @@ var mapValue struct{} = struct{}{}
 const (
 	Header = `# Package Statistics
 
-| package | type | direct deps | all deps | users | max score | min score |
-|:-|:-:|-:|-:|-:|-:|-:|
 `
 	titleImps     = `Direct Dependencies (Imports) Of `
 	titleAllImps  = `All (Including Transitive) Dependencies (Imports) Of `
@@ -71,6 +69,14 @@ func Generate(depMap analdata.DependencyMap) string {
 	sb := &strings.Builder{}
 	sb2 := &strings.Builder{}
 	sb.WriteString(Header)
+	tableData := make([][]string, 0, len(pkgNames)+1)
+	tableData = append(tableData, []string{
+		"package", "type", "direct deps", "all deps", "users", "max score", "min score",
+	})
+	tableAlign := []table.Align{
+		table.AlignLeft, table.AlignCenter, table.AlignRight, table.AlignRight,
+		table.AlignRight, table.AlignRight, table.AlignRight,
+	}
 
 	for _, pkg := range pkgNames {
 		pkgImps := depMap[pkg]
@@ -108,17 +114,15 @@ func Generate(depMap analdata.DependencyMap) string {
 			linkMinScore = `[` + strconv.Itoa(len(minScoreMap)) + `](` + fragment(titleMinScore+pkgTitle) + `)`
 		}
 
-		sb.WriteString(
-			fmt.Sprintf("| %s | %s | %s | %s | %s | %s | %s |\n",
-				linkPkg,
-				linkType,
-				linkImps,
-				linkAllImps,
-				linkUsers,
-				linkMaxScore,
-				linkMinScore,
-			),
-		)
+		tableData = append(tableData, []string{
+			linkPkg,
+			linkType,
+			linkImps,
+			linkAllImps,
+			linkUsers,
+			linkMaxScore,
+			linkMinScore,
+		})
 
 		allSectionsEmpty := true
 		sb2.WriteString(`
@@ -177,6 +181,7 @@ func Generate(depMap analdata.DependencyMap) string {
 		}
 	}
 
+	sb.WriteString(table.Generate(tableData, tableAlign))
 	sb.WriteString(Legend)
 	sb.WriteString(sb2.String())
 	sb.WriteString("\n")
